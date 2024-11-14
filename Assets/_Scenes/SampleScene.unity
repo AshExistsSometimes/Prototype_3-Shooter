@@ -484,7 +484,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ceb536dcaba50474b994d8695f62382b, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7202271454713460447, guid: ceb536dcaba50474b994d8695f62382b, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -7625,6 +7625,7 @@ MonoBehaviour:
   CamHelperOrigin: {fileID: 2063003186}
   CamHelper: {fileID: 1551684958}
   MoveSpeed: 3
+  JumpHeight: 5
   TurnSpeed: 3
   RotAngle: 45
   ShouldAlsoRotateChar: 1
@@ -7641,8 +7642,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   Length: 500
-  ReticleNormal: {r: 1, g: 1, b: 1, a: 0}
-  ReticleShoot: {r: 1, g: 0, b: 0, a: 0}
+  ReticleNormal: {r: 1, g: 1, b: 1, a: 1}
+  ReticleShoot: {r: 1, g: 0, b: 0, a: 1}
 --- !u!4 &1210361050 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 31f4aaec982354c4a9282a17f51367ad, type: 3}
@@ -8305,7 +8306,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0c2238e91bf95064bbeb1a1ae1ccc310, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

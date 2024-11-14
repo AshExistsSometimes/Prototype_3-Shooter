@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     internal GameObject MainCam;
 
     internal bool IsAiming;
+    internal bool IsEmoting;
 
 
     [Header("Refs")]
@@ -24,6 +25,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Movements")]
     public float MoveSpeed;
+    public float JumpHeight;
 
     [Header("Rotations")]
     public float TurnSpeed;
@@ -78,7 +80,11 @@ public class PlayerController : MonoBehaviour
         // Aiming Feature
         Aiming();
 
+        // Jumping
+        Jumping();
 
+        // Emoting
+        Emoting();
 
     }
 
@@ -187,12 +193,35 @@ public class PlayerController : MonoBehaviour
 
     private void CharacterMovement()
     {
-        Vector3 MoveVec = Vector3.zero;
-
-        MoveVec += transform.forward * RawVertical;
-        MoveVec += transform.right * RawHorizontal;
+        Vector3 MoveVec = GetMovementVector();
         MoveVec = MoveVec.normalized * MoveSpeed;
 
         MyRigid.velocity = new Vector3(MoveVec.x, MyRigid.velocity.y, MoveVec.z);
+    }
+
+    private Vector3 GetMovementVector()
+    {
+        Vector3 MoveVec = Vector3.zero;
+        MoveVec += transform.forward * RawVertical;
+        MoveVec += transform.right * RawHorizontal;
+        return MoveVec;
+    }
+
+    private void Jumping()
+    {
+        Vector3 MoveVec = GetMovementVector();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            MyAnim.SetBool("Jumping", true);
+            MyRigid.velocity = new Vector3(MoveVec.x, JumpHeight, MoveVec.z);
+            MyAnim.SetBool("Jumping", false);
+        }
+    }
+
+    private void Emoting()
+    {
+        IsEmoting = Input.GetKeyDown(KeyCode.P);
+        MyAnim.SetBool("Emoting", IsEmoting);
     }
 }
