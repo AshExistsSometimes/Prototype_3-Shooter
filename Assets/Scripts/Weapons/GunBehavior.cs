@@ -102,7 +102,7 @@ public class GunBehavior : MonoBehaviour
         if (GunData.ShootingType == SO_Gun.EShootType.Hold || GunData.ShootingType == SO_Gun.EShootType.Radius)
         {
             EffectedPool = new ObjectPool<ParticleSystem>(CreateEffectedSystem);
-            attackRadius.OnEnemyEnter += RadiusStartDamagingEnemy; // ERROR
+            attackRadius.OnEnemyEnter += RadiusStartDamagingEnemy;
             attackRadius.OnEnemyExit += RadiusStopDamagingEnemy;
         }
         //////////////////
@@ -169,13 +169,12 @@ public class GunBehavior : MonoBehaviour
 
     public void ShootGun()
     {
-        Debug.Log("Shoot Gun Is being Called");
         // INSTANT SHOT WEAPONS /////////////////////////////////////////////////////////
         if (GunData.ShootingType == SO_Gun.EShootType.Instant)
         {
             if (CurrentAmmo > 0 && CanShoot() && Input.GetKeyDown(KeyCode.Mouse0))
             {
-                GameObject NewBullet = Instantiate(GunData.ProjectileType, projectileOrigin.position, Quaternion.LookRotation(projectileOrigin.forward));
+                GameObject NewBullet = Instantiate(GunData.ProjectileType, projectileOrigin.position, projectileOrigin.rotation);
                 //NewBullet.transform.rotation = Quaternion.LookRotation(pc.targ);
                 NewBullet.GetComponent<Bullet>().targ = pc.targ;
                 SFXManager.TheSFXManager.PlaySFX("Gunshot");
@@ -276,6 +275,14 @@ public class GunBehavior : MonoBehaviour
                     CurrentAmmo -= 1;
                     TimeSinceLastShot = 0;
                 }
+
+                if (IsFlameOrb)
+                {
+                    GameObject NewProjectile = Instantiate(GunData.ProjectileType, projectileOrigin.position, projectileOrigin.rotation);
+                    NewProjectile.GetComponent<FlameOrb>().targ = pc.targ;
+                    CurrentAmmo -= 1;
+                    TimeSinceLastShot = 0;
+                }
             }
             // Charge Up Projectiles
             else if (CurrentAmmo > 0 && CanShoot() && Input.GetKeyUp(KeyCode.Mouse0))
@@ -366,7 +373,7 @@ public class GunBehavior : MonoBehaviour
 
             while (CurrentAmmo > 0 && CanShoot() && Input.GetKey(KeyCode.Mouse0))
             {
-                GameObject NewBullet = Instantiate(GunData.ProjectileType, projectileOrigin.position, Quaternion.LookRotation(projectileOrigin.forward));
+                GameObject NewBullet = Instantiate(GunData.ProjectileType, projectileOrigin.position, projectileOrigin.rotation);
                 NewBullet.transform.rotation = Quaternion.LookRotation(pc.targ);
                 SFXManager.TheSFXManager.PlaySFX("Gunshot");
                 NewBullet.GetComponent<Bullet>().targ = pc.targ;

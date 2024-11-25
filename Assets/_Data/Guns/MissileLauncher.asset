@@ -23,9 +23,9 @@ MonoBehaviour:
   ChargeTime: 0
   ClipSize: 1
   ClipSize_OnPickup: {x: 1, y: 1}
-  ReloadTime: 5
+  ReloadTime: 3.5
   ProjectileType: {fileID: 702569105620294203, guid: 6f14c1f294b41cd4fa3e0875cb8c46f6, type: 3}
   ProjectileMaxDistance: 0
-  ProjectileSpeed: 10
+  ProjectileSpeed: 15
   StatusGiven: 0
   GunPrefab: {fileID: 290726364681250146, guid: d39bd75a04149b34cbc3432a77b7baac, type: 3}

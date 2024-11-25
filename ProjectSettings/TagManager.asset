@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Shootable
   - Obstacle
+  - GameManager
+  - AttackRadius
   layers:
   - Default
   - TransparentFX
@@ -21,8 +23,8 @@ TagManager:
   - Spawners
   - MinimapUI
   - Obstacles
-  - 
-  - 
+  - Weapons
+  - BoundingBox
   - 
   - 
   - 

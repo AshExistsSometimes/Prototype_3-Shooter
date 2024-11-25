@@ -10,6 +10,8 @@ public class RPGProjectile : MonoBehaviour
 
     private Rigidbody rb;
 
+    public GameObject Explosion;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -28,7 +30,8 @@ public class RPGProjectile : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        //BOOM
+        GameObject myExplosion = Instantiate(Explosion, transform.position, Quaternion.identity);
+        Destroy(gameObject);
     }
 
 

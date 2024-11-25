@@ -8,9 +8,7 @@ using UnityEngine.UI;
 
 public class EnemyAI : Stats, IBurnable, ISlowable
 {
-
     private NavMeshAgent myMovement;
-    [SerializeField] private Stats myStats;
     public GameManager ScoreManager;
 
     [Header("Guard Specific")]

@@ -160,6 +160,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targ: {x: 0, y: 0, z: 0}
   FuseTime: 3
+  Explosion: {fileID: 2917593099115836659, guid: dabb03aef4cb7ba4f8d2f55cea66cb08, type: 3}
 --- !u!114 &7552348796394057563
 MonoBehaviour:
   m_ObjectHideFlags: 0

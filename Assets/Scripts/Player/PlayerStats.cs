@@ -46,9 +46,8 @@ public class PlayerStats : Stats
     }
 
 
-    private void OnTriggerEnter(Collider other)// All triggers attatched 
+    private void OnTriggerEnter(Collider other)// All triggers attatched // When an enemy touches me
     {
-        if (other.transform.CompareTag("AttackRadius")) return;
         EnemyAI ENEMY = other.GetComponentInParent<EnemyAI>();
         if (ENEMY !=null && !InIFrames)
         {
@@ -60,7 +59,6 @@ public class PlayerStats : Stats
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.transform.CompareTag("AttackRadius")) return;
         EnemyAI ENEMY = other.GetComponentInParent<EnemyAI>();
         if (ENEMY != null && !InIFrames)
         {

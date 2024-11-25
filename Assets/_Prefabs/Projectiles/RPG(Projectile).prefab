@@ -50,6 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GunData: {fileID: 11400000, guid: 41088e6c243c1c9459575752738b780a, type: 2}
   targ: {x: 0, y: 0, z: 0}
+  Explosion: {fileID: 2917593099115836659, guid: 006b634292488ba48b65d833d901be2f, type: 3}
 --- !u!54 &1119414861604659844
 Rigidbody:
   m_ObjectHideFlags: 0
