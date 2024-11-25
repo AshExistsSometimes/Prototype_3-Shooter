@@ -6,15 +6,20 @@ using UnityEngine.AI;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class EnemyAI : Stats, IBurnable
+public class EnemyAI : Stats, IBurnable, ISlowable
 {
 
+    private NavMeshAgent myMovement;
     [SerializeField] private Stats myStats;
     public GameManager ScoreManager;
 
     [Header("Guard Specific")]
     public GameObject Character;
     public GameObject ParticleIfHeadshot;
+    public float mySpeed = 2.7f;
+    private float SaveMySpeed;
+
+    private float SpeedMultiplier = 1;
 
     public Vector2 EnemyDmg;
 
@@ -31,18 +36,28 @@ public class EnemyAI : Stats, IBurnable
     public bool IsBurning { get => _isBurning; set => _isBurning = value; }
     private Coroutine BurningCoroutine;
 
+    // Slowing
+    private bool _isSlowed;
+    public bool IsSlowed { get => _isSlowed; set => _isSlowed = value; }
+    private Coroutine SlowingCoroutine;
+
     ////////////////////////////////////
 
     protected override void Start()
     {
         base.Start();
         MyNav.enabled = true;
+        myMovement = GetComponent<NavMeshAgent>();
+        SaveMySpeed = mySpeed;
+        
 
         Character = GameObject.FindGameObjectWithTag("Player");
     }
 
     private void Update()
     {
+        myMovement.speed = mySpeed;
+
         if (bIsDead) return;
 
         MyNav.SetDestination(Character.transform.position);
@@ -84,7 +99,6 @@ public class EnemyAI : Stats, IBurnable
             StopCoroutine(BurningCoroutine);
         }
     }
-
     private IEnumerator Burn(int DamagePerSecond)
     {
         float minTimeToDmg = 1f / DamagePerSecond;
@@ -97,6 +111,42 @@ public class EnemyAI : Stats, IBurnable
             yield return wait;
             TakeDmg(damagePerTick);
         }
+    }
+
+
+    // Slowing //
+    public void StartSlowing(float SpeedModifier)
+    {
+        IsSlowed = true;
+        if (SlowingCoroutine != null)
+        {
+            StopCoroutine(SlowingCoroutine);
+        }
+
+        SlowingCoroutine = StartCoroutine(CryoGunSlowBuildup(SpeedMultiplier));
+    }
+
+    public void StopSlowing()
+    {
+        StartCoroutine(SlownessEndCooldown());
+        StopCoroutine(SlowingCoroutine);
+    }
+
+    IEnumerator CryoGunSlowBuildup(float SpeedModifier)
+    {
+        if (SpeedMultiplier > 0.5f)// If slowed less than 50%
+        {
+            yield return new WaitForSeconds(0.5f); // wait for 0.5s
+            SpeedMultiplier -= 0.1f;// Decrease speed by 10%
+            mySpeed = mySpeed * SpeedMultiplier;
+        }
+    }
+    IEnumerator SlownessEndCooldown()
+    {
+        yield return new WaitForSeconds(1f);
+        IsSlowed = false;
+        SpeedMultiplier = 1f;
+        mySpeed = SaveMySpeed;
     }
 
     // Freezing

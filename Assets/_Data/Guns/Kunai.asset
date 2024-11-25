@@ -21,7 +21,7 @@ MonoBehaviour:
   Knockback: 0
   AttackDiameter: 0
   ChargeTime: 0
-  ClipSize: 3
+  ClipSize: 10
   ClipSize_OnPickup: {x: 3, y: 3}
   ReloadTime: 1.5
   ProjectileType: {fileID: 8480618674958400395, guid: a0b889f6aa967f9499bbdbd7f4b2c95a, type: 3}

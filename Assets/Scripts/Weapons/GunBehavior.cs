@@ -30,6 +30,7 @@ public class GunBehavior : MonoBehaviour
 
     [Header("Effects")]
     public bool ApplyBurn = false;
+    public bool ApplySlowed = false;
     public bool ApplyFreeze = false;
     public bool ApplyPoison = false;
     public bool ApplyStun = false;
@@ -50,6 +51,9 @@ public class GunBehavior : MonoBehaviour
     [Space]
     public int EffectDPS = 5;
     public float EffectDuration = 3f;
+    public float SpeedModifier = 0f;
+
+    private bool ReducingAmmo = false;
 
     private ObjectPool<ParticleSystem> EffectedPool;
     private Dictionary<EnemyAI, ParticleSystem> EnemyParticleSystems = new();
@@ -102,7 +106,7 @@ public class GunBehavior : MonoBehaviour
             attackRadius.OnEnemyExit += RadiusStopDamagingEnemy;
         }
         //////////////////
-       
+
 
 
         pc = GameObject.Find("Player").GetComponent<PlayerController>();
@@ -122,7 +126,7 @@ public class GunBehavior : MonoBehaviour
         ShootGun();
     }
 
-    
+
 
     // RELOAD LOGIC //
     public void StartReload()
@@ -131,7 +135,7 @@ public class GunBehavior : MonoBehaviour
         if (!IsReloading)//prevents reloading twice at the same time
         {
             ReloadTimerObject.SetActive(true);
-            
+
             ReloadTimer.value = 0f;
             Debug.Log("Reloading");
             StartCoroutine(Reload());
@@ -165,6 +169,7 @@ public class GunBehavior : MonoBehaviour
 
     public void ShootGun()
     {
+        Debug.Log("Shoot Gun Is being Called");
         // INSTANT SHOT WEAPONS /////////////////////////////////////////////////////////
         if (GunData.ShootingType == SO_Gun.EShootType.Instant)
         {
@@ -203,7 +208,7 @@ public class GunBehavior : MonoBehaviour
                 GameObject CenBullet = Instantiate(GunData.ProjectileType, projectileOrigin.position, Quaternion.LookRotation(projectileOrigin.forward));// Centre Shot
 
                 GameObject RBullet = Instantiate(GunData.ProjectileType, projectileOrigin.position, Quaternion.LookRotation(projectileOrigin.forward));// Right SHot
-                
+
                 GameObject LBullet = Instantiate(GunData.ProjectileType, projectileOrigin.position, Quaternion.LookRotation(projectileOrigin.forward));// LEft SHot
 
                 SFXManager.TheSFXManager.PlaySFX("Gunshot");
@@ -235,7 +240,7 @@ public class GunBehavior : MonoBehaviour
                     hit2.transform.GetComponent<EnemyAI>()?.TakeDmg(GunData.Damage);
                     LBullet.GetComponent<Bullet>().targ = hit2.point;
                 }
-                else 
+                else
                 {
                     LBullet.GetComponent<Bullet>().targ = Quaternion.AngleAxis(-45, transform.up) * PlayerCam.transform.forward * 999f;
                 }
@@ -263,7 +268,7 @@ public class GunBehavior : MonoBehaviour
                     CurrentAmmo -= 1;
                     TimeSinceLastShot = 0;
                 }
-                
+
                 if (IsMissile)
                 {
                     GameObject NewProjectile = Instantiate(GunData.ProjectileType, projectileOrigin.position, Quaternion.LookRotation(projectileOrigin.forward));
@@ -276,15 +281,15 @@ public class GunBehavior : MonoBehaviour
             else if (CurrentAmmo > 0 && CanShoot() && Input.GetKeyUp(KeyCode.Mouse0))
             {
                 if (IsGrenade && ThrowReady)
-                {     
-                        GameObject NewProjectile = Instantiate(GunData.ProjectileType, projectileOrigin.position, Quaternion.LookRotation(projectileOrigin.forward));
-                        NewProjectile.GetComponent<GrenadeProjectile>().targ = pc.targ;
-                        NewProjectile.GetComponent<GrenadeProjectile>().GrenadeThrown(Mathf.Lerp(MinThrowForce, MaxThrowForce, ThrowForce));
-                        CurrentAmmo -= 1;
-                        TimeSinceLastShot = 0;
-                        ThrowForce = 0f;
+                {
+                    GameObject NewProjectile = Instantiate(GunData.ProjectileType, projectileOrigin.position, Quaternion.LookRotation(projectileOrigin.forward));
+                    NewProjectile.GetComponent<GrenadeProjectile>().targ = pc.targ;
+                    NewProjectile.GetComponent<GrenadeProjectile>().GrenadeThrown(Mathf.Lerp(MinThrowForce, MaxThrowForce, ThrowForce));
+                    CurrentAmmo -= 1;
+                    TimeSinceLastShot = 0;
+                    ThrowForce = 0f;
                 }
-            }          
+            }
         }
 
 
@@ -294,12 +299,15 @@ public class GunBehavior : MonoBehaviour
         {
             if (CurrentAmmo > 0 && CanShoot() && Input.GetKey(KeyCode.Mouse0))
             {
+                print("Shooting");
                 ParticleShootingSystem.gameObject.SetActive(true);
                 attackRadius.gameObject.SetActive(true);
+                StartCoroutine(HoldWeaponAmmoDepletion());
             }
 
             else
             {
+                print("NOT shooting");
                 ParticleShootingSystem.gameObject.SetActive(false);
                 attackRadius.gameObject.SetActive(false);
             }
@@ -308,7 +316,7 @@ public class GunBehavior : MonoBehaviour
         // RADIUS WEAPONS ///////////////////////////////////////////////////////////
         if (GunData.ShootingType == SO_Gun.EShootType.Radius)
         {
-            
+
         }
 
 
@@ -316,7 +324,7 @@ public class GunBehavior : MonoBehaviour
         // MELEE WEAPONS /////////////////////////////////////////////////////////////
         if (GunData.ShootingType == SO_Gun.EShootType.Melee)
         {
-            
+
         }
 
 
@@ -324,7 +332,7 @@ public class GunBehavior : MonoBehaviour
         // DASH WEAPONS /////////////////////////////////////////////////////////////
         if (GunData.ShootingType == SO_Gun.EShootType.Dash)
         {
-            
+
         }
 
 
@@ -333,7 +341,7 @@ public class GunBehavior : MonoBehaviour
 
     }
     private void ChargeProjectileForce()
-    {      
+    {
         if ((GunData.ShootingType == SO_Gun.EShootType.Projectile && HasChargeUp) && Input.GetKey(KeyCode.Mouse0))
         {
             ThrowReady = true;
@@ -342,6 +350,16 @@ public class GunBehavior : MonoBehaviour
         }
     }
 
+    private IEnumerator HoldWeaponAmmoDepletion()
+    {
+        if (CurrentAmmo > 0 && !ReducingAmmo)
+        {
+            ReducingAmmo = true;
+            yield return new WaitForSeconds(0.25f);
+            CurrentAmmo -= 1;
+            ReducingAmmo = false;
+        }
+    }
     IEnumerator UseChargeWeapon()// For some reason doing bursts at higher fire rates
         {
             yield return new WaitForSeconds(GunData.ChargeTime);
@@ -361,8 +379,6 @@ public class GunBehavior : MonoBehaviour
             }
         }
 
-
-
     // Hold - Radius Weapons //
     private ParticleSystem CreateEffectedSystem()
     {
@@ -376,6 +392,22 @@ public class GunBehavior : MonoBehaviour
             if (enemy.TryGetComponent<IBurnable>(out IBurnable burnable))
             {
                 burnable.StartBurning(EffectDPS);
+                // Particles
+                ParticleSystem effectAppliedSystem = EffectedPool.Get();
+                effectAppliedSystem.transform.SetParent(enemy.transform, false);
+                effectAppliedSystem.transform.localPosition = Vector3.zero;
+                ParticleSystem.MainModule main = effectAppliedSystem.main;
+                main.loop = true;
+                EnemyParticleSystems.Add(enemy, effectAppliedSystem);
+            }
+        }
+
+        else if (ApplySlowed)
+        {
+            SpeedModifier = 0f;
+            if (enemy.TryGetComponent<ISlowable>(out ISlowable slowable))
+            {
+                slowable.StartSlowing(SpeedModifier);
                 // Particles
                 ParticleSystem effectAppliedSystem = EffectedPool.Get();
                 effectAppliedSystem.transform.SetParent(enemy.transform, false);
@@ -418,6 +450,14 @@ public class GunBehavior : MonoBehaviour
             if (enemy.TryGetComponent<IBurnable>(out IBurnable burnable))
             {
                 burnable.StopBurning();
+                RadiusStopDamagingEnemy(enemy);// UNKNOWN IF WORKS OR NOT, CHECK HERE IF BROKEN
+            }
+        }
+        else if (ApplySlowed)
+        {
+            if (enemy.TryGetComponent<ISlowable>(out ISlowable slowable))
+            {
+                slowable.StopSlowing();
                 RadiusStopDamagingEnemy(enemy);// UNKNOWN IF WORKS OR NOT, CHECK HERE IF BROKEN
             }
         }

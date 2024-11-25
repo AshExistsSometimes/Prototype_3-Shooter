@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 5900172555102055299}
   - component: {fileID: 1474412560161456124}
   m_Layer: 0
-  m_Name: AttackRange
+  m_Name: Attack Radius
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -218,9 +218,11 @@ MonoBehaviour:
   projectileOrigin: {fileID: 547433706575176793}
   AmmoCount: {fileID: 0}
   CurrentAmmo: 0
+  PlayerCam: {fileID: 0}
   ReloadTimerObject: {fileID: 0}
   ReloadTimer: {fileID: 0}
   ApplyBurn: 0
+  ApplySlowed: 0
   ApplyFreeze: 1
   ApplyPoison: 0
   ApplyStun: 0
@@ -229,6 +231,16 @@ MonoBehaviour:
   EffectAppliedSystemPrefab: {fileID: 0}
   EffectDPS: 5
   EffectDuration: 3
+  SpeedModifier: 0
+  HasChargeUp: 0
+  MinThrowForce: 5
+  MaxThrowForce: 100
+  ThrowForceBuildUpTime: 3
+  IsKunai: 0
+  IsGrenade: 0
+  IsMissile: 0
+  IsFlameOrb: 0
+  IsGrapple: 0
 --- !u!4 &641245709141443443 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b04d047b1fed1464ba33f831c6d3f6cc, type: 3}

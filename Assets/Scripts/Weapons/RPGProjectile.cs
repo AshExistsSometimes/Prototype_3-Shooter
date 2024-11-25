@@ -10,8 +10,6 @@ public class RPGProjectile : MonoBehaviour
 
     private Rigidbody rb;
 
-    private float RicochetCount = 0f;
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();

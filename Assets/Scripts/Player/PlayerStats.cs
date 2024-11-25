@@ -46,11 +46,13 @@ public class PlayerStats : Stats
     }
 
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)// All triggers attatched 
     {
+        if (other.transform.CompareTag("AttackRadius")) return;
         EnemyAI ENEMY = other.GetComponentInParent<EnemyAI>();
         if (ENEMY !=null && !InIFrames)
         {
+            print(other.gameObject.name);
             TakeDmg(UnityEngine.Random.Range(ENEMY.EnemyDmg.x, ENEMY.EnemyDmg.y + 1));// take random damage between 2 values of enemy damage
             StartCoroutine(IFrameCD());
         }
@@ -58,9 +60,11 @@ public class PlayerStats : Stats
 
     private void OnTriggerStay(Collider other)
     {
+        if (other.transform.CompareTag("AttackRadius")) return;
         EnemyAI ENEMY = other.GetComponentInParent<EnemyAI>();
         if (ENEMY != null && !InIFrames)
         {
+            print(other.gameObject.name);
             TakeDmg(UnityEngine.Random.Range(ENEMY.EnemyDmg.x, ENEMY.EnemyDmg.y + 1));// take random damage between 2 values of enemy damage
             StartCoroutine(IFrameCD());
         }

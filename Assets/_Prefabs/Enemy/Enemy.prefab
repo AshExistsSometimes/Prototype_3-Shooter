@@ -8739,7 +8739,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 16384
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
@@ -8832,6 +8832,7 @@ MonoBehaviour:
   ScoreManager: {fileID: 0}
   Character: {fileID: 7251373741659131081}
   ParticleIfHeadshot: {fileID: 0}
+  mySpeed: 2.7
   EnemyDmg: {x: 5, y: 6}
   YellInterval: 30
   BloodExplosion: {fileID: 1446189133584279400}
