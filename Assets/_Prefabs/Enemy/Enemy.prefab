@@ -4920,7 +4920,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.6, y: 27.08, z: 0.71000004}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8064219957400983155}
@@ -8828,6 +8828,8 @@ MonoBehaviour:
   HP: 30
   DEF: 0
   DmgReductionPerPt: 0.05
+  myStats: {fileID: 0}
+  ScoreManager: {fileID: 0}
   Character: {fileID: 7251373741659131081}
   ParticleIfHeadshot: {fileID: 0}
   EnemyDmg: {x: 5, y: 6}
