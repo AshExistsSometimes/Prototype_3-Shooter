@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
@@ -33,7 +34,9 @@ public class PlayerController : MonoBehaviour
     public LayerMask PlayerMask;
 
     [Header("Movement")]
-    public float MoveSpeed;
+    public float mySpeed = 3f;
+    public float WalkSpeed = 3f;
+    public float SprintSpeed = 6f;
     public float JumpHeight;
 
     public bool CanMoveAndRotate = true;
@@ -75,6 +78,18 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.LeftControl))
+        {
+            mySpeed = SprintSpeed;
+            MyAnim.speed = SprintSpeed / 3;
+        }
+        else
+        {
+            mySpeed = WalkSpeed;
+            MyAnim.speed = 1;
+        }
+
+
         MouseY_Raw = -Input.GetAxisRaw("Mouse Y");
         MouseX_Raw = Input.GetAxisRaw("Mouse X");
 
@@ -254,7 +269,7 @@ public class PlayerController : MonoBehaviour
     private void CharacterMovement()
     {
         Vector3 MoveVec = GetMovementVector();
-        MoveVec = MoveVec.normalized * MoveSpeed;
+        MoveVec = MoveVec.normalized * mySpeed;
 
         MyRigid.velocity = new Vector3(MoveVec.x, MyRigid.velocity.y, MoveVec.z);
     }

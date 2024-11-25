@@ -80,6 +80,11 @@ public class GunBehavior : MonoBehaviour
     public bool IsMissile;
     public bool IsFlameOrb;
     public bool IsGrapple;
+    public bool IsCrossbow;
+    [Space]
+    [Space]
+
+    [Header("Weapon Class: Projectile")]
 
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -175,7 +180,6 @@ public class GunBehavior : MonoBehaviour
             if (CurrentAmmo > 0 && CanShoot() && Input.GetKeyDown(KeyCode.Mouse0))
             {
                 GameObject NewBullet = Instantiate(GunData.ProjectileType, projectileOrigin.position, projectileOrigin.rotation);
-                //NewBullet.transform.rotation = Quaternion.LookRotation(pc.targ);
                 NewBullet.GetComponent<Bullet>().targ = pc.targ;
                 SFXManager.TheSFXManager.PlaySFX("Gunshot");
                 CurrentAmmo -= 1;
@@ -296,6 +300,16 @@ public class GunBehavior : MonoBehaviour
                     TimeSinceLastShot = 0;
                     ThrowForce = 0f;
                 }
+                
+                if (IsCrossbow && ThrowReady)
+                {
+                    GameObject NewProjectile = Instantiate(GunData.ProjectileType, projectileOrigin.position, Quaternion.LookRotation(projectileOrigin.forward));
+                    NewProjectile.GetComponent<CrossbowBolt>().targ = pc.targ;
+                    NewProjectile.GetComponent<CrossbowBolt>().BoltFired(Mathf.Lerp(MinThrowForce, MaxThrowForce, ThrowForce));
+                    CurrentAmmo -= 1;
+                    TimeSinceLastShot = 0;
+                    ThrowForce = 0f;
+                }
             }
         }
 
@@ -306,7 +320,6 @@ public class GunBehavior : MonoBehaviour
         {
             if (CurrentAmmo > 0 && CanShoot() && Input.GetKey(KeyCode.Mouse0))
             {
-                print("Shooting");
                 ParticleShootingSystem.gameObject.SetActive(true);
                 attackRadius.gameObject.SetActive(true);
                 StartCoroutine(HoldWeaponAmmoDepletion());
@@ -314,7 +327,6 @@ public class GunBehavior : MonoBehaviour
 
             else
             {
-                print("NOT shooting");
                 ParticleShootingSystem.gameObject.SetActive(false);
                 attackRadius.gameObject.SetActive(false);
             }
@@ -323,7 +335,10 @@ public class GunBehavior : MonoBehaviour
         // RADIUS WEAPONS ///////////////////////////////////////////////////////////
         if (GunData.ShootingType == SO_Gun.EShootType.Radius)
         {
-
+            if (CanShoot() && Input.GetKey(KeyCode.Mouse0))
+            {
+                GameObject NewRadius = Instantiate(GunData.ProjectileType, projectileOrigin.position, projectileOrigin.rotation);
+            }
         }
 
 
@@ -353,7 +368,6 @@ public class GunBehavior : MonoBehaviour
         {
             ThrowReady = true;
             ThrowForce += Time.deltaTime * (1 / ThrowForceBuildUpTime);
-
         }
     }
 
@@ -427,7 +441,17 @@ public class GunBehavior : MonoBehaviour
 
         else if (ApplyFreeze)
         {
-            ///
+            if (enemy.TryGetComponent<ISlowable>(out ISlowable slowable))
+            {
+                slowable.StartSlowing(SpeedModifier);
+                // Particles
+                ParticleSystem effectAppliedSystem = EffectedPool.Get();
+                effectAppliedSystem.transform.SetParent(enemy.transform, false);
+                effectAppliedSystem.transform.localPosition = Vector3.zero;
+                ParticleSystem.MainModule main = effectAppliedSystem.main;
+                main.loop = true;
+                EnemyParticleSystems.Add(enemy, effectAppliedSystem);
+            }
         }
 
         else if (ApplyPoison)

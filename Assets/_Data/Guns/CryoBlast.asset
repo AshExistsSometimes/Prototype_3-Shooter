@@ -19,9 +19,13 @@ MonoBehaviour:
   FireRate: 10
   Recoil: 0
   Knockback: 1
+  AttackDiameter: 0
+  ChargeTime: 0
   ClipSize: 0
   ClipSize_OnPickup: {x: 0, y: 0}
   ReloadTime: 0
-  ProjectileType: {fileID: 0}
+  ProjectileType: {fileID: 7318775885242444764, guid: a36f2f3cac2acd348ae8df1c8b14a57e, type: 3}
+  ProjectileMaxDistance: 0
+  ProjectileSpeed: 10
   StatusGiven: 3
   GunPrefab: {fileID: 2355572370430630570, guid: be6d6f89b3a496f4d93a40833cd7f611, type: 3}
