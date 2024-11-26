@@ -39,6 +39,10 @@ public class EnemyAI : Stats, IBurnable, ISlowable
     public bool IsSlowed { get => _isSlowed; set => _isSlowed = value; }
     private Coroutine SlowingCoroutine;
 
+    private bool _slowing = false;
+
+    private float _slownessTimer;
+
     ////////////////////////////////////
 
     protected override void Start()
@@ -68,6 +72,15 @@ public class EnemyAI : Stats, IBurnable, ISlowable
         }
 
         MyHPSlider.value = CurHP;
+
+        if (_slownessTimer > 0f)
+        {
+            _slownessTimer -= Time.deltaTime;
+        }
+        else if (_isBurning)
+        {
+            StopSlowing();
+        }
 
         // Kills enemy if health is 0 or lower
         if (CurHP <= 0)
@@ -115,7 +128,9 @@ public class EnemyAI : Stats, IBurnable, ISlowable
     // Slowing //
     public void StartSlowing(float SpeedModifier)
     {
-        if (SlowingCoroutine != null)
+        _slownessTimer = 1f;
+
+        if (_slowing)
         {
             //StopCoroutine(SlowingCoroutine);
             return;
@@ -126,20 +141,21 @@ public class EnemyAI : Stats, IBurnable, ISlowable
 
     public void StopSlowing()
     {
-        StartCoroutine(SlownessEndCooldown());
+        //StartCoroutine(SlownessEndCooldown());
         //StopCoroutine(SlowingCoroutine);
     }
 
     IEnumerator CryoGunSlowBuildup()
     {
+        _slowing = true;
         if (SpeedMultiplier > 0.5f)// If slowed less than 50%
         {
             yield return new WaitForSeconds(0.5f); // wait for 0.5s
             SpeedMultiplier -= 0.1f;// Decrease speed by 10%
-            print(SpeedMultiplier);
             mySpeed = SaveMySpeed * SpeedMultiplier;
             myMovement.speed = mySpeed;
         }
+        _slowing = false;
     }
     IEnumerator SlownessEndCooldown()
     {

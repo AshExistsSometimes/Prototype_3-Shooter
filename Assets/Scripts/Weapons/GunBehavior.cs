@@ -473,6 +473,8 @@ public class GunBehavior : MonoBehaviour
     {
         ParticleSystem.MainModule main = Instance.main;
         main.loop = false;
+        
+
         yield return new WaitForSeconds(EffectDuration);
         Instance.gameObject.SetActive(false);
         if (ApplyBurn)
