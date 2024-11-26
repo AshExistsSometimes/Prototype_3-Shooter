@@ -11680,4 +11680,4 @@ MonoBehaviour:
   MaxScale: 20
   ExpansionSpeed: 2
   SpeedMultiplier: 0
-  ExplosionDamage: 100
+  ExplosionDamage: 0

@@ -27,7 +27,7 @@ public class IceRadiusAtk : MonoBehaviour
         transform.localScale = Vector3.Lerp(new Vector3(MinScale, MinScale, MinScale), new Vector3(MaxScale, MaxScale, MaxScale), _time);
         if (_time >= 1)
         {
-            StartCoroutine(Waittodestroy());
+            StartCoroutine(WaitToDestroy());
         }
     }
 
@@ -36,12 +36,14 @@ public class IceRadiusAtk : MonoBehaviour
         if (other.TryGetComponent<EnemyAI>(out EnemyAI enemy))
         {
             EnemiesInRadius.Add(enemy);
+            enemy.isFrozen = true;
+            enemy.FreezeMe();
             print(enemy.transform.name);
             enemy.TakeDmg(ExplosionDamage);
         }
     }
 
-    private IEnumerator Waittodestroy()
+    private IEnumerator WaitToDestroy()
     {
         yield return new WaitForSeconds(SpeedMultiplier);
         Destroy(gameObject);

@@ -17,6 +17,8 @@ public class EnemyAI : Stats, IBurnable, ISlowable
     public float mySpeed = 2.7f;
     private float SaveMySpeed;
 
+    public GameObject MyFrozenParticle;
+
     private float SpeedMultiplier = 1;
 
     public Vector2 EnemyDmg;
@@ -26,6 +28,8 @@ public class EnemyAI : Stats, IBurnable, ISlowable
     public GameObject BloodExplosion;
 
     public Slider MyHPSlider;
+
+    private int SaveMyDefence;
 
     // EFFECTS /////////////////////////
 
@@ -40,6 +44,7 @@ public class EnemyAI : Stats, IBurnable, ISlowable
     private Coroutine SlowingCoroutine;
 
     private bool _slowing = false;
+    public bool isFrozen = false;
 
     private float _slownessTimer;
 
@@ -47,6 +52,8 @@ public class EnemyAI : Stats, IBurnable, ISlowable
 
     protected override void Start()
     {
+        SaveMyDefence = DEF;
+
         base.Start();
         MyNav.enabled = true;
         myMovement = GetComponent<NavMeshAgent>();
@@ -77,7 +84,7 @@ public class EnemyAI : Stats, IBurnable, ISlowable
         {
             _slownessTimer -= Time.deltaTime;
         }
-        else if (_isBurning)
+        else if (_isSlowed)
         {
             StopSlowing();
         }
@@ -145,17 +152,28 @@ public class EnemyAI : Stats, IBurnable, ISlowable
         //StopCoroutine(SlowingCoroutine);
     }
 
+    public void FreezeMe()
+    {
+        if (isFrozen)
+        {
+            StartCoroutine(Freezing());
+        }
+    }
+
     IEnumerator CryoGunSlowBuildup()
     {
-        _slowing = true;
-        if (SpeedMultiplier > 0.5f)// If slowed less than 50%
+        if (!isFrozen)
         {
-            yield return new WaitForSeconds(0.5f); // wait for 0.5s
-            SpeedMultiplier -= 0.1f;// Decrease speed by 10%
-            mySpeed = SaveMySpeed * SpeedMultiplier;
-            myMovement.speed = mySpeed;
+            _slowing = true;
+            if (SpeedMultiplier > 0.5f)// If slowed less than 50%
+            {
+                yield return new WaitForSeconds(0.5f); // wait for 0.5s
+                SpeedMultiplier -= 0.1f;// Decrease speed by 10%
+                mySpeed = SaveMySpeed * SpeedMultiplier;
+                myMovement.speed = mySpeed;
+            }
+            _slowing = false;
         }
-        _slowing = false;
     }
     IEnumerator SlownessEndCooldown()
     {
@@ -164,6 +182,20 @@ public class EnemyAI : Stats, IBurnable, ISlowable
         SpeedMultiplier = 1f;
         mySpeed = SaveMySpeed;
         myMovement.speed = mySpeed;
+    }
+
+    IEnumerator Freezing()
+    {
+        mySpeed = 0f;
+        DEF = -1000;
+        MyAnim.speed = 0;
+        MyFrozenParticle.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        mySpeed = SaveMySpeed;
+        DEF = SaveMyDefence;
+        MyAnim.speed = 1;
+        MyFrozenParticle.SetActive(false);
+        isFrozen = false;
     }
 
     // Freezing

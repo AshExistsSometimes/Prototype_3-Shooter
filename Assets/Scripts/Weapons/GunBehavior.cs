@@ -84,7 +84,8 @@ public class GunBehavior : MonoBehaviour
     [Space]
     [Space]
 
-    [Header("Weapon Class: Projectile")]
+    [Header("Weapon Class: Radius")]
+    private bool _CanUseRadius = true;
 
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +105,7 @@ public class GunBehavior : MonoBehaviour
         IsReloading = false;
 
         // Hold Weapons //
-        if (GunData.ShootingType == SO_Gun.EShootType.Hold || GunData.ShootingType == SO_Gun.EShootType.Radius)
+        if (GunData.ShootingType == SO_Gun.EShootType.Hold)
         {
             EffectedPool = new ObjectPool<ParticleSystem>(CreateEffectedSystem);
             attackRadius.OnEnemyEnter += RadiusStartDamagingEnemy;
@@ -135,13 +136,11 @@ public class GunBehavior : MonoBehaviour
     // RELOAD LOGIC //
     public void StartReload()
     {
-        Debug.Log("Trying Reload");
         if (!IsReloading)//prevents reloading twice at the same time
         {
             ReloadTimerObject.SetActive(true);
 
             ReloadTimer.value = 0f;
-            Debug.Log("Reloading");
             StartCoroutine(Reload());
         }
     }
@@ -334,9 +333,10 @@ public class GunBehavior : MonoBehaviour
         // RADIUS WEAPONS ///////////////////////////////////////////////////////////
         if (GunData.ShootingType == SO_Gun.EShootType.Radius)
         {
-            if (CanShoot() && Input.GetKey(KeyCode.Mouse0))
+            if (CanShoot() && Input.GetKey(KeyCode.Mouse0) && _CanUseRadius)
             {
-                GameObject NewRadius = Instantiate(GunData.ProjectileType, projectileOrigin.position, projectileOrigin.rotation);
+                StartCoroutine(SpawnOneRadius());
+                
             }
         }
 
@@ -514,6 +514,13 @@ public class GunBehavior : MonoBehaviour
         }
     }
 
+    private IEnumerator SpawnOneRadius()
+    {
+        _CanUseRadius = false;
+        GameObject NewRadius = Instantiate(GunData.ProjectileType, projectileOrigin.position, projectileOrigin.rotation);
+        yield return new WaitForSeconds(3f);
+        _CanUseRadius = true;
+    }
     private void RadiusStopDamagingEnemy(EnemyAI enemy)
     {
         if (EnemyParticleSystems.ContainsKey(enemy))

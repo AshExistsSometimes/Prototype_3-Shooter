@@ -46,7 +46,7 @@ public class SpawningLogic : MonoBehaviour
             int RandPoint = UnityEngine.Random.Range(0, SpawningPoints.Count);
             SpawnLoc = SpawningPoints[RandPoint].transform.position;
 
-            //spawning#
+            //spawning
             GameObject NewEnemy = Instantiate(EnemyPrefab, SpawnLoc, Quaternion.identity);
         }
 
