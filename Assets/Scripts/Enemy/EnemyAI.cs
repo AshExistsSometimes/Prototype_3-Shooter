@@ -115,28 +115,30 @@ public class EnemyAI : Stats, IBurnable, ISlowable
     // Slowing //
     public void StartSlowing(float SpeedModifier)
     {
-        IsSlowed = true;
         if (SlowingCoroutine != null)
         {
-            StopCoroutine(SlowingCoroutine);
+            //StopCoroutine(SlowingCoroutine);
+            return;
         }
-
-        SlowingCoroutine = StartCoroutine(CryoGunSlowBuildup(SpeedMultiplier));
+        IsSlowed = true;
+        SlowingCoroutine = StartCoroutine(CryoGunSlowBuildup());
     }
 
     public void StopSlowing()
     {
         StartCoroutine(SlownessEndCooldown());
-        StopCoroutine(SlowingCoroutine);
+        //StopCoroutine(SlowingCoroutine);
     }
 
-    IEnumerator CryoGunSlowBuildup(float SpeedModifier)
+    IEnumerator CryoGunSlowBuildup()
     {
         if (SpeedMultiplier > 0.5f)// If slowed less than 50%
         {
             yield return new WaitForSeconds(0.5f); // wait for 0.5s
             SpeedMultiplier -= 0.1f;// Decrease speed by 10%
-            mySpeed = mySpeed * SpeedMultiplier;
+            print(SpeedMultiplier);
+            mySpeed = SaveMySpeed * SpeedMultiplier;
+            myMovement.speed = mySpeed;
         }
     }
     IEnumerator SlownessEndCooldown()
@@ -145,6 +147,7 @@ public class EnemyAI : Stats, IBurnable, ISlowable
         IsSlowed = false;
         SpeedMultiplier = 1f;
         mySpeed = SaveMySpeed;
+        myMovement.speed = mySpeed;
     }
 
     // Freezing

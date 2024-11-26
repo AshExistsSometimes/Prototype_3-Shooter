@@ -132,7 +132,6 @@ public class GunBehavior : MonoBehaviour
     }
 
 
-
     // RELOAD LOGIC //
     public void StartReload()
     {
@@ -481,7 +480,7 @@ public class GunBehavior : MonoBehaviour
             if (enemy.TryGetComponent<IBurnable>(out IBurnable burnable))
             {
                 burnable.StopBurning();
-                RadiusStopDamagingEnemy(enemy);// UNKNOWN IF WORKS OR NOT, CHECK HERE IF BROKEN
+                RadiusStopDamagingEnemy(enemy);
             }
         }
         else if (ApplySlowed)

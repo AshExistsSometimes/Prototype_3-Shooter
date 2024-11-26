@@ -121,8 +121,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MinScale: 0.5
   MaxScale: 15
-  ExpansionSpeed: 0.5
-  ExplosionHoldTime: 0.1
+  ExpansionSpeed: 0.3
+  ExplosionHoldTime: 0.05
   ExplosionDamage: 20
 --- !u!1 &8621811908474717940
 GameObject:
