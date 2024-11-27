@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -11,13 +12,16 @@ public class EnemyAI : Stats, IBurnable, ISlowable
     private NavMeshAgent myMovement;
     public GameManager ScoreManager;
 
-    public bool IsRegularGuard = true;
-    public bool IsBossEnemy = false;
+    [Space]
+    public float MyScoreValue = 20f;
+    [Space]
 
     [Header("Guard Specific")]
     public GameObject Character;
     public float mySpeed = 2.7f;
     private float SaveMySpeed;
+    public bool IsRegularGuard = true;
+    public bool IsBossEnemy = false;
 
     public GameObject MyFrozenParticle;
     public GameObject MyPoisonParticle;
@@ -299,14 +303,8 @@ public class EnemyAI : Stats, IBurnable, ISlowable
             MeshRenderer.enabled = false;
         }
         BloodExplosion.SetActive(true);
-        if (IsRegularGuard)
-        {
-            GameManager.Instance.OnKillEnemy();
-        }
-        else if (IsBossEnemy)
-        {
-            GameManager.Instance.OnKillBoss();
-        }
+       
+        GameManager.Instance.OnKillEnemy(MyScoreValue);
         
         StartCoroutine(WaitThenUnload());
     }

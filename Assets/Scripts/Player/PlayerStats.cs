@@ -33,6 +33,7 @@ public class PlayerStats : Stats
         MagsOnMe = 10f;
         PlayerIsDead = false;
         UpdateUI();
+        CurHP = HP;
     }
 
     private void Update()

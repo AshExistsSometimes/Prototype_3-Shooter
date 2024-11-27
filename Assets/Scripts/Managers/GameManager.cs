@@ -99,12 +99,6 @@ public class GameManager : MonoBehaviour
         DepleteCooldownTimer();
 
         UpdateKillstreakValues();
-
-        // DEBUG SCORE CODE
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            OnKillEnemy();
-        }
     }
 
     // SCORE LOGIC //
@@ -178,17 +172,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void OnKillEnemy()
+    public void OnKillEnemy(float ScoreAdded)
     {
-        KillStreak += 1;
-        Score = Score + (ScorePerKill * scoreMultiplier);
-        KillcountTimer = KSCooldown;
-    }
-
-    public void OnKillBoss()
-    {
-        KillStreak += 1;
-        Score = Score + ((ScorePerKill * KilledBossMultiplier) * scoreMultiplier);
+        KillStreak += 1f;
+        Score = Score + (ScoreAdded * scoreMultiplier);
         KillcountTimer = KSCooldown;
     }
 

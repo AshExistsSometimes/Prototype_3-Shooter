@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using static UnityEditor.PlayerSettings;
@@ -11,12 +13,17 @@ public class Stats : MonoBehaviour
     protected CapsuleCollider MyCol;
     protected Animator MyAnim;
 
+    public TMP_Text FloatingDamageText;
+
+
     [Header("Stats Global")]
     public float HP;
     protected float CurHP;
     internal bool bIsDead;
 
-    public int DEF; // for every 1 point in DEf you get X DmgReduction
+    public bool NeedsFloatingDamage = true;
+
+    public int DEF; // for every 1 point in DEF you get X DmgReduction
     public float DmgReductionPerPt = 0.05f;
 
     protected virtual void Start()
@@ -26,11 +33,18 @@ public class Stats : MonoBehaviour
         TryGetComponent(out MyAnim);
 
         CurHP = HP;
+
+        FloatingDamageText.text = ("");
     }
 
     public virtual void TakeDmg(float Dmg)
     {
         CurHP -= (Dmg * (1 - (DEF * DmgReductionPerPt)));
+
+        if (NeedsFloatingDamage)
+        {
+            StartCoroutine(FloatingDamageAppearDissapear(Dmg));
+        }
 
         if (CurHP <= 0)
         {
@@ -41,5 +55,13 @@ public class Stats : MonoBehaviour
     protected virtual void DeathLogic()
     {
         throw new NotImplementedException();
+    }
+
+    private IEnumerator FloatingDamageAppearDissapear(float Dmg)
+    {
+        FloatingDamageText.text = ("");
+        FloatingDamageText.text = ("-" + (Dmg * (1 - (DEF * DmgReductionPerPt))));
+        yield return new WaitForSeconds(0.5f);
+        FloatingDamageText.text = ("");
     }
 }

@@ -21,7 +21,7 @@ MonoBehaviour:
   Knockback: 0
   AttackDiameter: 0
   ChargeTime: 0.5
-  ClipSize: 600
+  ClipSize: 400
   ClipSize_OnPickup: {x: 456, y: 600}
   ReloadTime: 3.5
   ProjectileType: {fileID: 5445839404127985874, guid: 80a3c678d6b85db49aca92cee517fd64, type: 3}
@@ -29,4 +29,3 @@ MonoBehaviour:
   ProjectileSpeed: 10
   StatusGiven: 0
   GunPrefab: {fileID: 3089046034389897809, guid: c76dbd02562f5714988f79e0ec092c2f, type: 3}
-  IsReloading: 0

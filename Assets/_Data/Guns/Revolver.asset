@@ -15,7 +15,7 @@ MonoBehaviour:
   GunName: Revolver
   ShootingType: 0
   GunID: 0
-  Damage: 25
+  Damage: 100
   FireRate: 0.5
   Recoil: 1
   Knockback: 0
@@ -29,4 +29,3 @@ MonoBehaviour:
   ProjectileSpeed: 75
   StatusGiven: 0
   GunPrefab: {fileID: 5273659599644668780, guid: 1532bc91c041ccb42b2cfae87e7c3bfd, type: 3}
-  IsReloading: 0
