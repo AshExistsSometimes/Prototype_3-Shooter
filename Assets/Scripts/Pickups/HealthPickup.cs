@@ -1,20 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class HealthPickup : MonoBehaviour
 {
-    public PlayerStats player;
+    public float HealthGain = 100f;
 
-    public float healthgain;
-
-    private void Awake()
+    private void OnCollisionEnter(Collision collision)
     {
-        player = GetComponent<PlayerStats>();
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            HealPlayer(collision);
+            Destroy(gameObject);
+        }
     }
-    //public void OnPickup()
-    //{
 
-    //}
-
+    public void HealPlayer(Collision Target)
+    {
+        {
+            Target.transform.GetComponent<PlayerStats>()?.TakeDmg(-HealthGain);
+        }
+    }
 }

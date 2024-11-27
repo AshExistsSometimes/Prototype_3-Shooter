@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class AmmoPickup : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public float MagsGain = 5f;
+
+    private void OnCollisionEnter(Collision collision)
     {
-        
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            IncreaseMagAmount(collision);
+            Destroy(gameObject);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void IncreaseMagAmount(Collision Target)
     {
-        
+        {
+            Target.transform.GetComponent<PlayerStats>()?.IncreaseMags(MagsGain);
+        }
     }
 }

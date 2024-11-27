@@ -22,14 +22,35 @@ public class PlayerStats : Stats
 
     [Header("Ammo")]
     public float MagsOnMe;
-    public float MagsPerPickup = 5;
+    public TMP_Text MagCounterUI;
 
     public bool PlayerIsDead = false;
+    public bool CanReload = true;
 
     protected override void Start()
     {
         base.Start();
+        MagsOnMe = 10f;
         PlayerIsDead = false;
+        UpdateUI();
+    }
+
+    private void Update()
+    {
+        if (CurHP > HP)// Locks player to Max HP
+        {
+            CurHP = HP;
+        }
+        UpdateUI();
+
+        if (MagsOnMe > 0)
+        {
+            CanReload = true;
+        }
+        else if (MagsOnMe <= 0)
+        {
+            CanReload = false;
+        }
     }
 
     protected override void DeathLogic()
@@ -43,6 +64,11 @@ public class PlayerStats : Stats
         base.TakeDmg(Dmg);
 
         UpdateUI();
+    }
+
+    public void IncreaseMags(float amount)
+    {
+        MagsOnMe += amount;
     }
 
 
@@ -79,23 +105,7 @@ public class PlayerStats : Stats
     private void UpdateUI()
     {
         HPSlider.value = CurHP;
-    }
-
-
-    public void PickUpMags()
-    {
-        MagsOnMe = MagsOnMe + MagsPerPickup;
-    }
-
-    // Healing Logic //
-    public void HealMe()
-    {
-        CurHP = CurHP + HealthPerPickup;
-
-        if (CurHP > HP)// Locks player to Max HP
-        {
-            CurHP = HP;
-        }
+        MagCounterUI.text = ("Mags: " + MagsOnMe);
     }
 
     // Death Logic //

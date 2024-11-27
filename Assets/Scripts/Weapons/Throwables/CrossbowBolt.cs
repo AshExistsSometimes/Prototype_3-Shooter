@@ -33,6 +33,7 @@ public class CrossbowBolt : MonoBehaviour
     public void BoltHit(Collision Target)
     {
         Target.transform.GetComponent<EnemyAI>()?.TakeDmg(GunData.Damage);
+        Target.transform.GetComponent<EnemyAI>()?.HitWithPoison();
     }
 
     private IEnumerator Cull()

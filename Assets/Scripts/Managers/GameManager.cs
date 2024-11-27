@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Score")]
     public float ScorePerKill;
+    public float KilledBossMultiplier = 100f;
     [Space]
     private float scoreMultiplier;
 
@@ -181,6 +182,13 @@ public class GameManager : MonoBehaviour
     {
         KillStreak += 1;
         Score = Score + (ScorePerKill * scoreMultiplier);
+        KillcountTimer = KSCooldown;
+    }
+
+    public void OnKillBoss()
+    {
+        KillStreak += 1;
+        Score = Score + ((ScorePerKill * KilledBossMultiplier) * scoreMultiplier);
         KillcountTimer = KSCooldown;
     }
 

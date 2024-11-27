@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class GunBehavior : MonoBehaviour
 {
-    private PlayerStats playerStats;
+    public PlayerStats playerStats;
 
     [Header("General Refs")]
     [SerializeField] private SO_Gun GunData;
@@ -136,7 +136,7 @@ public class GunBehavior : MonoBehaviour
     // RELOAD LOGIC //
     public void StartReload()
     {
-        if (!IsReloading)//prevents reloading twice at the same time
+        if (!IsReloading && (playerStats.CanReload) && (CurrentAmmo < GunData.ClipSize))//prevents reloading twice at the same time / checks if the player has mags / Only reload if gun has less than max ammo
         {
             ReloadTimerObject.SetActive(true);
 
@@ -152,6 +152,7 @@ public class GunBehavior : MonoBehaviour
         yield return new WaitForSeconds(GunData.ReloadTime);
 
         CurrentAmmo = GunData.ClipSize;
+        playerStats.MagsOnMe -= 1f;
         ReloadTimerObject.SetActive(false);
 
         IsReloading = false;
@@ -336,7 +337,6 @@ public class GunBehavior : MonoBehaviour
             if (CanShoot() && Input.GetKey(KeyCode.Mouse0) && _CanUseRadius)
             {
                 StartCoroutine(SpawnOneRadius());
-                
             }
         }
 

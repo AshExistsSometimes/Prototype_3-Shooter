@@ -15,13 +15,13 @@ MonoBehaviour:
   GunName: Crossbow
   ShootingType: 3
   GunID: 16
-  Damage: 3
+  Damage: 1.5
   FireRate: 0
   Recoil: 0
   Knockback: 0
   AttackDiameter: 0
   ChargeTime: 0
-  ClipSize: 10
+  ClipSize: 1
   ClipSize_OnPickup: {x: 5, y: 10}
   ReloadTime: 2
   ProjectileType: {fileID: 641151608127679557, guid: 2d770d51c42cb62448937083cc82ded7, type: 3}

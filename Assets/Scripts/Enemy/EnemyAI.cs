@@ -11,13 +11,18 @@ public class EnemyAI : Stats, IBurnable, ISlowable
     private NavMeshAgent myMovement;
     public GameManager ScoreManager;
 
+    public bool IsRegularGuard = true;
+    public bool IsBossEnemy = false;
+
     [Header("Guard Specific")]
     public GameObject Character;
-    public GameObject ParticleIfHeadshot;
     public float mySpeed = 2.7f;
     private float SaveMySpeed;
 
     public GameObject MyFrozenParticle;
+    public GameObject MyPoisonParticle;
+
+    public UnityEvent WhenIDie;
 
     private float SpeedMultiplier = 1;
 
@@ -48,11 +53,20 @@ public class EnemyAI : Stats, IBurnable, ISlowable
 
     private float _slownessTimer;
 
+    // Poison
+    public int PoisonCounter = 0;
+    private bool _isPoisoned = false;
+
+    [Space]
+    public float PoisonDmg = 3f;
+    public float PoisonTime = 5;
+
     ////////////////////////////////////
 
     protected override void Start()
     {
         SaveMyDefence = DEF;
+        MyHPSlider.maxValue = HP;
 
         base.Start();
         MyNav.enabled = true;
@@ -187,7 +201,14 @@ public class EnemyAI : Stats, IBurnable, ISlowable
     IEnumerator Freezing()
     {
         mySpeed = 0f;
-        DEF = -1000;
+        if (IsRegularGuard)
+        {
+            DEF = -1000;// Makes regular enemies get instakilled
+        }
+        else if (IsBossEnemy)
+        {
+            DEF = -5;// Makes Boss enemy take more damage
+        }
         MyAnim.speed = 0;
         MyFrozenParticle.SetActive(true);
         yield return new WaitForSeconds(3f);
@@ -202,7 +223,41 @@ public class EnemyAI : Stats, IBurnable, ISlowable
     // TO DO --------------------------------------------------------------------------------------------------------------------------------------- FREEZING -----------------------------------------------------
 
     // Poison
-    // TO DO --------------------------------------------------------------------------------------------------------------------------------------- POISONING ----------------------------------------------------
+    public void HitWithPoison()
+    {
+        if (PoisonCounter < 5)
+        {
+            PoisonCounter += 1;
+        }
+        else if (PoisonCounter >= 3)//makes it poison on shot 5, idk why
+        {
+            _isPoisoned = true;
+            Poisoned();
+        }
+    }
+
+    public void Poisoned()
+    {
+        if (_isPoisoned)
+        {
+            StartCoroutine(PoisonTick());
+        }
+    }
+
+    private IEnumerator PoisonTick()
+    {
+        MyPoisonParticle.SetActive(true);
+        for (int i = 0; i < PoisonTime; i++)
+        {
+            if (_isPoisoned)
+            {
+                yield return new WaitForSeconds(1f);
+                TakeDmg(PoisonDmg);
+            }
+        }
+        _isPoisoned = false;
+        MyPoisonParticle.SetActive(false);
+    }
 
     // Stunned
     // TO DO --------------------------------------------------------------------------------------------------------------------------------------- STUN ---------------------------------------------------------
@@ -216,6 +271,7 @@ public class EnemyAI : Stats, IBurnable, ISlowable
     protected override void DeathLogic()
     { 
         OnDeath();
+        WhenIDie.Invoke();
         StopBurning();
     }
             
@@ -243,7 +299,15 @@ public class EnemyAI : Stats, IBurnable, ISlowable
             MeshRenderer.enabled = false;
         }
         BloodExplosion.SetActive(true);
-        GameManager.Instance.OnKillEnemy();
+        if (IsRegularGuard)
+        {
+            GameManager.Instance.OnKillEnemy();
+        }
+        else if (IsBossEnemy)
+        {
+            GameManager.Instance.OnKillBoss();
+        }
+        
         StartCoroutine(WaitThenUnload());
     }
     public IEnumerator WaitThenUnload()

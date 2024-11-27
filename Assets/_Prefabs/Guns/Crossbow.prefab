@@ -142,3 +142,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GunData: {fileID: 11400000, guid: d31917260b1fcea4cb0232d9fd9571bc, type: 2}
   projectileOrigin: {fileID: 6187947055205985876}
+  AmmoCount: {fileID: 0}
+  CurrentAmmo: 0
+  PlayerCam: {fileID: 0}
+  ReloadTimerObject: {fileID: 0}
+  ReloadTimer: {fileID: 0}
+  ApplyBurn: 0
+  ApplySlowed: 0
+  ApplyFreeze: 0
+  ApplyPoison: 1
+  ApplyStun: 0
+  ApplyBrainwash: 0
+  ParticleShootingSystem: {fileID: 0}
+  EffectAppliedSystemPrefab: {fileID: 0}
+  EffectDPS: 5
+  EffectDuration: 3
+  SpeedModifier: 0
+  HasChargeUp: 1
+  MinThrowForce: 20
+  MaxThrowForce: 90
+  ThrowForceBuildUpTime: 3
+  IsKunai: 0
+  IsGrenade: 0
+  IsMissile: 0
+  IsFlameOrb: 0
+  IsGrapple: 0
+  IsCrossbow: 1
