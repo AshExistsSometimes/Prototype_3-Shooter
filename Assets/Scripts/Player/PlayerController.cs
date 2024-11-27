@@ -30,7 +30,9 @@ public class PlayerController : MonoBehaviour
     public GameObject CamHelperOrigin;
     public GameObject CamHelper;
     public CapsuleCollider PlayerCollider;
-
+    [Space]
+    public Slider StaminaSlider;
+    [Space]
     public LayerMask PlayerMask;
 
     [Header("Movement")]
@@ -38,6 +40,12 @@ public class PlayerController : MonoBehaviour
     public float WalkSpeed = 3f;
     public float SprintSpeed = 6f;
     public float JumpHeight;
+    [Space]
+    public float MaxStamina = 100;
+    private float Stamina;
+    public float StaminaDrainSpeed = 1f;
+    private bool CanSprint = true;
+    public float TimeBeforeSprintAfterExhausted = 2f;
 
     public bool CanMoveAndRotate = true;
 
@@ -72,23 +80,15 @@ public class PlayerController : MonoBehaviour
         MyRigid = GetComponent<Rigidbody>();
         MainCam = Camera.main.gameObject;
         Reticle.SetActive(false);
+        Stamina = MaxStamina;
+        StaminaSlider.maxValue = MaxStamina;
 
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.LeftControl))
-        {
-            mySpeed = SprintSpeed;
-            MyAnim.speed = SprintSpeed / 3;
-        }
-        else
-        {
-            mySpeed = WalkSpeed;
-            MyAnim.speed = 1;
-        }
-
+        
 
         MouseY_Raw = -Input.GetAxisRaw("Mouse Y");
         MouseX_Raw = Input.GetAxisRaw("Mouse X");
@@ -106,6 +106,7 @@ public class PlayerController : MonoBehaviour
         if (CanMoveAndRotate)
         {
             CharacterMovement();
+            
         }
 
         // This is for animating the character
@@ -149,6 +150,48 @@ public class PlayerController : MonoBehaviour
             MyAnim.SetBool("GROUNDED", true);
         }
 
+        SprintCheck();
+
+    }
+
+    private void SprintCheck()
+    {
+        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.LeftControl)) && CanSprint)
+        {
+            if (CanSprint)
+            {
+                mySpeed = SprintSpeed;
+                MyAnim.speed = SprintSpeed / 3;
+                Stamina -= StaminaDrainSpeed * Time.deltaTime;
+                StaminaSlider.value = Stamina;
+            }
+
+            if (Stamina <= 0.001f)
+            {
+                Stamina = 0f;
+                CanSprint = false;
+                StartCoroutine(SprintCooldown());
+            }
+            
+        }
+        else
+        {
+            mySpeed = WalkSpeed;
+            MyAnim.speed = 1;
+
+            Stamina += (StaminaDrainSpeed / 1.5f) * Time.deltaTime;
+            StaminaSlider.value = Stamina;
+            if (Stamina >= MaxStamina)
+            {
+                Stamina = MaxStamina;
+            }
+        }
+    }
+
+    private IEnumerator SprintCooldown()
+    {
+        yield return new WaitForSeconds(TimeBeforeSprintAfterExhausted);
+        CanSprint = true;
     }
 
     private void LateUpdate()
