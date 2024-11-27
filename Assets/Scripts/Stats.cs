@@ -31,15 +31,18 @@ public class Stats : MonoBehaviour
         TryGetComponent(out MyAnim);
 
         CurHP = HP;
-
-        FloatingDamageText.text = ("");
+        if (FloatingDamageText != null)
+        {
+            FloatingDamageText.text = ("");
+        }
+        
     }
 
     public virtual void TakeDmg(float Dmg)
     {
         CurHP -= (Dmg * (1 - (DEF * DmgReductionPerPt)));
 
-        if (NeedsFloatingDamage)
+        if (NeedsFloatingDamage && FloatingDamageText != null)
         {
             StartCoroutine(FloatingDamageAppearDissapear(Dmg));
         }
@@ -50,10 +53,7 @@ public class Stats : MonoBehaviour
         }
     }
 
-    protected virtual void DeathLogic()
-    {
-        throw new NotImplementedException();
-    }
+    protected virtual void DeathLogic() { }
 
     private IEnumerator FloatingDamageAppearDissapear(float Dmg)
     {

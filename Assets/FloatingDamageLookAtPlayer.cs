@@ -5,14 +5,14 @@ using UnityEngine.TextCore.Text;
 
 public class FloatingDamageLookAtPlayer : MonoBehaviour
 {
-    public GameObject playerCamera;
+    public Transform playerCamera;
 
     private void Start()
     {
-        playerCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        playerCamera = Camera.main.transform;
     }
     private void Update()
     {
-        transform.LookAt(-playerCamera.transform.position);
+        transform.rotation = Quaternion.LookRotation(-(playerCamera.position - transform.position));
     }
 }

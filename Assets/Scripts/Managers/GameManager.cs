@@ -77,7 +77,6 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(this);
-            DontDestroyOnLoad(KillstreakPopup);// DESTROYED ON LOAD, BREAKS SCORE ON RESPAWN
         }
     }
 

@@ -9147,10 +9147,11 @@ MonoBehaviour:
   DEF: 0
   DmgReductionPerPt: 0.05
   ScoreManager: {fileID: 0}
-  IsRegularGuard: 1
-  IsBossEnemy: 0
+  MyScoreValue: 20
   Character: {fileID: 7251373741659131081}
   mySpeed: 2.6
+  IsRegularGuard: 1
+  IsBossEnemy: 0
   MyFrozenParticle: {fileID: 4415864841212522232}
   MyPoisonParticle: {fileID: 5830487153070892314}
   WhenIDie:

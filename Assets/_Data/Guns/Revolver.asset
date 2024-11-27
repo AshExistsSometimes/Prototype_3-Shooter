@@ -15,7 +15,7 @@ MonoBehaviour:
   GunName: Revolver
   ShootingType: 0
   GunID: 0
-  Damage: 100
+  Damage: 20
   FireRate: 0.5
   Recoil: 1
   Knockback: 0
