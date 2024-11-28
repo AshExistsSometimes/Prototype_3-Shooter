@@ -204,6 +204,7 @@ public class WeaponBehavior : BaseWeapon
 					SpawnAndSetUpPrefab(hit.point, projectileOrigin.position, Quaternion.LookRotation(hit.point - projectileOrigin.position));
 
 				}
+
 				else
 				{
 					SpawnAndSetUpPrefab(PlayerCam.transform.position + (PlayerCam.transform.forward * 999f), projectileOrigin.position, Quaternion.LookRotation(PlayerCam.transform.position + (PlayerCam.transform.forward * 999f) - projectileOrigin.position));
@@ -212,13 +213,8 @@ public class WeaponBehavior : BaseWeapon
 				SFXManager.TheSFXManager.PlaySFX("Gunshot");
 				CurrentAmmo -= 1;
 				TimeSinceLastShot = 0;
-
-				// if (pc.targOb != null)// if its not null
-				// 	pc.targOb.GetComponent<Stats>()?.TakeDmg(GunData.Damage);// go to targets stats and damage it
 			}
 		}
-
-
 
 		// CHARGE UP WEAPONS ///////////////////////////////////////////////////////////
 		if (GunData.ShootingType == SO_Gun.EShootType.ChargeUp)
@@ -236,12 +232,6 @@ public class WeaponBehavior : BaseWeapon
 		{
 			if (CurrentAmmo > 0 && CanShoot() && state)
 			{
-				// GameObject CenBullet = Instantiate(GunData.ProjectileType, projectileOrigin.position, Quaternion.LookRotation(projectileOrigin.forward));// Centre Shot
-
-				// GameObject RBullet = Instantiate(GunData.ProjectileType, projectileOrigin.position, Quaternion.LookRotation(projectileOrigin.forward));// Right SHot
-
-				// GameObject LBullet = Instantiate(GunData.ProjectileType, projectileOrigin.position, Quaternion.LookRotation(projectileOrigin.forward));// LEft SHot
-
 				SFXManager.TheSFXManager.PlaySFX("Gunshot");
 				CurrentAmmo -= 1;
 				TimeSinceLastShot = 0;
@@ -249,52 +239,35 @@ public class WeaponBehavior : BaseWeapon
 				if (Physics.Raycast(PlayerCam.transform.position + (PlayerCam.transform.forward * 3), PlayerCam.transform.forward, out RaycastHit hit, 999f))// Centre shot
 				{
 					hit.transform.GetComponent<EnemyAI>()?.TakeDmg(GunData.Damage);
-					// CenBullet.GetComponent<Bullet>().targ = hit.point;
 					SpawnAndSetUpPrefab(hit.point, projectileOrigin.position, Quaternion.LookRotation(hit.point - projectileOrigin.position));
 				}
 				else
 				{
-					// CenBullet.GetComponent<Bullet>().targ = PlayerCam.transform.forward * 999f;
 					SpawnAndSetUpPrefab(PlayerCam.transform.position + (PlayerCam.transform.forward * 999f), projectileOrigin.position, Quaternion.LookRotation(PlayerCam.transform.position + (PlayerCam.transform.forward * 999f) - projectileOrigin.position));
 				}
-
-				// (PlayerCam.transform.forward * 3) this adds a offset forward to the gun's barrel. It does not deal with the rotation.
+				///
 				if (Physics.Raycast(PlayerCam.transform.position + (PlayerCam.transform.forward * 3), Quaternion.AngleAxis(45, PlayerCam.transform.up) * PlayerCam.transform.forward, out RaycastHit hit1, 999f)) // Right Shot
 				{
 					hit1.transform.GetComponent<EnemyAI>()?.TakeDmg(GunData.Damage);
-					// RBullet.GetComponent<Bullet>().targ = hit1.point;
+					
 					SpawnAndSetUpPrefab(hit1.point, projectileOrigin.position, Quaternion.LookRotation(hit1.point - projectileOrigin.position));
 				}
 				else
 				{
-					// RBullet.GetComponent<Bullet>().targ = Quaternion.AngleAxis(45, transform.up) * PlayerCam.transform.forward * 999f;
+					
 					SpawnAndSetUpPrefab(PlayerCam.transform.position + (Quaternion.AngleAxis(45, transform.up) * (PlayerCam.transform.forward * 999f)), projectileOrigin.position, Quaternion.LookRotation(PlayerCam.transform.position + (PlayerCam.transform.forward * 999f) - projectileOrigin.position));
-					// SpawnAndSetUpPrefab(Quaternion.AngleAxis(45, transform.up) * PlayerCam.transform.forward * 999f);
+					
 				}
-
-
+				///
 				if (Physics.Raycast(PlayerCam.transform.position + (PlayerCam.transform.forward * 3), Quaternion.AngleAxis(-45, PlayerCam.transform.up) * PlayerCam.transform.forward, out RaycastHit hit2, 999f)) // Left Shot
 				{
 					hit2.transform.GetComponent<EnemyAI>()?.TakeDmg(GunData.Damage);
-					// LBullet.GetComponent<Bullet>().targ = hit2.point;
-					// SpawnAndSetUpPrefab(hit2.point);
 					SpawnAndSetUpPrefab(hit2.point, projectileOrigin.position, Quaternion.LookRotation(hit2.point - projectileOrigin.position));
-
 				}
 				else
 				{
-					// LBullet.GetComponent<Bullet>().targ = Quaternion.AngleAxis(-45, transform.up) * PlayerCam.transform.forward * 999f;
-					// SpawnAndSetUpPrefab(Quaternion.AngleAxis(-45, transform.up) * PlayerCam.transform.forward * 999f);
 					SpawnAndSetUpPrefab(PlayerCam.transform.position + (Quaternion.AngleAxis(-45, transform.up) * (PlayerCam.transform.forward * 999f)), projectileOrigin.position, Quaternion.LookRotation(PlayerCam.transform.position + (PlayerCam.transform.forward * 999f) - projectileOrigin.position));
-
 				}
-
-				// Debug.DrawRay(PlayerCam.transform.position + (PlayerCam.transform.forward * 3), PlayerCam.transform.forward * 1000, Color.red, 10);
-				// Debug.DrawRay(PlayerCam.transform.position + (PlayerCam.transform.forward * 3), Quaternion.AngleAxis(45, PlayerCam.transform.up) * PlayerCam.transform.forward * 1000, Color.red, 10);
-				// Debug.DrawRay(PlayerCam.transform.position + (PlayerCam.transform.forward * 3), Quaternion.AngleAxis(-45, PlayerCam.transform.up) * PlayerCam.transform.forward * 1000, Color.red, 10);
-
-				//if (pc.targOb != null)// if its not null
-				//    pc.targOb.GetComponent<Stats>().TakeDmg(GunData.Damage);// go to targets stats and damage it
 			}
 		}
 
@@ -325,22 +298,20 @@ public class WeaponBehavior : BaseWeapon
 			}
 		}
 
-
-
 		// HOLD WEAPONS //////////////////////////////////////////////////////////////
 		if (GunData.ShootingType == SO_Gun.EShootType.Hold)
 		{
 			if (CurrentAmmo > 0 && CanShoot() && state)
-			{
-				if (ParticleShootingSystem != null) ParticleShootingSystem.gameObject.SetActive(true);
-				if (attackRadius != null) attackRadius.gameObject.SetActive(true);
-				StartCoroutine(HoldWeaponAmmoDepletion());
-			}
+				{
+					if (ParticleShootingSystem != null) ParticleShootingSystem.gameObject.SetActive(true);
+					if (attackRadius != null) attackRadius.gameObject.SetActive(true);
+					StartCoroutine(HoldWeaponAmmoDepletion());
+				}
 			else
-			{
-				if (ParticleShootingSystem != null) ParticleShootingSystem.gameObject.SetActive(false);
-				if (attackRadius != null) attackRadius.gameObject.SetActive(false);
-			}
+				{
+					if (ParticleShootingSystem != null) ParticleShootingSystem.gameObject.SetActive(false);
+					if (attackRadius != null) attackRadius.gameObject.SetActive(false);
+				}
 		}
 
 		// RADIUS WEAPONS ///////////////////////////////////////////////////////////
@@ -351,8 +322,6 @@ public class WeaponBehavior : BaseWeapon
 				StartCoroutine(SpawnOneRadius());
 			}
 		}
-
-
 
 		// MELEE WEAPONS /////////////////////////////////////////////////////////////
 		if (GunData.ShootingType == SO_Gun.EShootType.Melee && state)
@@ -419,7 +388,6 @@ public class WeaponBehavior : BaseWeapon
 			}
 
 			////////////////////////////
-			///
 			if (!state)
 			{
 				fired = false;
@@ -427,15 +395,15 @@ public class WeaponBehavior : BaseWeapon
 
 		}
 
-        //if (GunData.ShootingType != SO_Gun.EShootType.Melee)
-        //{
-        //    if (MeleeRadius != null)
-        //    {
-        //        MeleeRadius.SetActive(false);
-        //    }
-        //}
-        #endregion
-    }
+		if (GunData.ShootingType != SO_Gun.EShootType.Melee)
+		{
+			if (MeleeRadius != null)
+			{
+				MeleeRadius.SetActive(false);
+			}
+		}
+		#endregion
+	}
 	#region SpawnAndSetUpPrefab
 	private GameObject SpawnAndSetUpPrefab(Vector3 target, Vector3? spawnPos = null, Quaternion? spawnRotation = null)
 	{
@@ -480,11 +448,6 @@ public class WeaponBehavior : BaseWeapon
 	#endregion
 
 	#region FireAndSpawn
-	/// <summary>
-	/// Waiting for imp.
-	/// </summary>
-	/// <returns></returns>
-	[Obsolete("Not sure of use case, dont use.")]
 	public GameObject FireRaycastAndSpawn()
 	{
 		if (Physics.Raycast(PlayerCam.transform.position, PlayerCam.transform.forward, out RaycastHit hit, 999f, pc.PlayerMask))
@@ -518,9 +481,6 @@ public class WeaponBehavior : BaseWeapon
 			SFXManager.TheSFXManager.PlaySFX("Gunshot");
 			CurrentAmmo -= 1;
 			TimeSinceLastShot = 0;
-
-			// if (pc.targOb != null)// if its not null
-			// 	pc.targOb.GetComponent<Stats>().TakeDmg(GunData.Damage);// go to targets stats and damage it
 			yield return null;
 		}
 	}
@@ -582,21 +542,6 @@ public class WeaponBehavior : BaseWeapon
 				EnemyParticleSystems.Add(enemy, effectAppliedSystem);
 			}
 		}
-
-		else if (ApplyPoison)
-		{
-			///
-		}
-
-		else if (ApplyStun)
-		{
-			///
-		}
-
-		else if (ApplyBrainwash)
-		{
-			///
-		}
 	}
 	#endregion
 
@@ -622,7 +567,7 @@ public class WeaponBehavior : BaseWeapon
 			if (enemy.TryGetComponent<ISlowable>(out ISlowable slowable))
 			{
 				slowable.StopSlowing();
-				RadiusStopDamagingEnemy(enemy);// UNKNOWN IF WORKS OR NOT, CHECK HERE IF BROKEN
+				RadiusStopDamagingEnemy(enemy);
 			}
 		}
 		else if (ApplyFreeze)
@@ -705,9 +650,7 @@ public class WeaponBehavior : BaseWeapon
 
 		lightningDMG = GunData.Damage;
 
-		newZappedItems.Add(startEnemy.gameObject);
-		//Collider[] PotentialItems = Physics.OverlapSphere(startEnemy.position, 3f, (1 << 7));// Spread to nearby enemies
-		//Collider[] 
+		newZappedItems.Add(startEnemy.gameObject); 
 
 
 		float damage = GunData.Damage;
@@ -756,18 +699,6 @@ public class WeaponBehavior : BaseWeapon
             }
 
 			damage -= (damage * 0.15f);
-
-            //for (int i = 0; i < ZappedItems.Count; i++)
-            //{
-            //	if (i < 3)
-            //	{
-            //		
-            //		if (PotentialItems[i].GetComponent<EnemyAI>() != null)
-            //		{
-            //			newZappedItems.Add(PotentialItems[i].gameObject);
-
-            //		}
-            //	}
             }
 			yield return null;
 		}
