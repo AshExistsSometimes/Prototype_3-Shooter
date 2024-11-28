@@ -27,16 +27,18 @@ public class MeleeAttackZone : MonoBehaviour
             if (other.TryGetComponent<EnemyAI>(out EnemyAI enemy) && !running)
             {
                 StartCoroutine(DealConstantDamage(enemy));
-                enemy.mySpeed = enemy.mySpeed * 0.75f;
+                
             }
         }
     }
     private IEnumerator DealConstantDamage(EnemyAI enemy)
     {
         running = true;
+        enemy.mySpeed = 1f;
         enemy.TakeDmg(MeleeDamage);
         yield return new WaitForSeconds(FireRate);
         running = false;
+        enemy.mySpeed = enemy.SaveMySpeed;
     }
 
     private IEnumerator SingleAttack(EnemyAI enemy)

@@ -17,7 +17,8 @@ public class SO_Gun : ScriptableObject
         Hold,// Fires Constantly when attack button held
         Radius,// Creates Sphere around player
         Melee,// No Projectile
-        Dash// Propels Player forward as projectile, uses melee stats
+        Dash,// Propels Player forward as projectile, uses melee stats
+        Lightning
     }
 
     public enum EStatusGiven

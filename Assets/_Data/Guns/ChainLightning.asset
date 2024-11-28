@@ -13,15 +13,19 @@ MonoBehaviour:
   m_Name: ChainLightning
   m_EditorClassIdentifier: 
   GunName: Tesla Coil
-  ShootingType: 0
+  ShootingType: 8
   GunID: 11
   Damage: 15
   FireRate: 4
   Recoil: 1
   Knockback: -0.25
+  AttackDiameter: 0
+  ChargeTime: 0
   ClipSize: 0
   ClipSize_OnPickup: {x: 0, y: 0}
   ReloadTime: 0
   ProjectileType: {fileID: 0}
+  ProjectileMaxDistance: 0
+  ProjectileSpeed: 10
   StatusGiven: 4
   GunPrefab: {fileID: 2092596593084847543, guid: a8f963ae0fdb7494b90117cb23c1dc45, type: 3}

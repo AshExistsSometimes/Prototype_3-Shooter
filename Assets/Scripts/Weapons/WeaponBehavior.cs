@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.Pool;
 using UnityEngine.UI;
+using System.Linq;
 
 public class WeaponBehavior : BaseWeapon
 {
@@ -12,7 +13,10 @@ public class WeaponBehavior : BaseWeapon
 	public PlayerStats playerStats;
 	public MeleeAttackZone meleeWeapon;
 
-	[Header("General Refs")]
+	public GameObject LightningLinecast;
+    private float lightningDMG;
+
+    [Header("General Refs")]
 	public TMP_Text AmmoCount;
 	public int CurrentAmmo;
 	public Camera PlayerCam;
@@ -352,58 +356,86 @@ public class WeaponBehavior : BaseWeapon
 
 		// MELEE WEAPONS /////////////////////////////////////////////////////////////
 		if (GunData.ShootingType == SO_Gun.EShootType.Melee && state)
-		{
-			if (MeleeAttackConstantly)
 			{
-				MeleeRadius.SetActive(true);
-				meleeWeapon.AttackConstantly = true;
-				meleeWeapon.FireRate = GunData.FireRate;
-				meleeWeapon.MeleeDamage = GunData.Damage;
-			}
-			else if (!MeleeAttackConstantly && !HasDash)
-			{
-				if (!fired)
+				if (MeleeAttackConstantly)
 				{
-					fired = true;
 					MeleeRadius.SetActive(true);
-					meleeWeapon.AttackConstantly = false;
+					meleeWeapon.AttackConstantly = true;
 					meleeWeapon.FireRate = GunData.FireRate;
-					meleeWeapon.MeleeDamage = GunData.Damage;		
+					meleeWeapon.MeleeDamage = GunData.Damage;
 				}
-				
-            }
-            else if (!MeleeAttackConstantly && HasDash)
-            {
-                MeleeRadius.SetActive(false);
-				if (!fired)
+				else if (!MeleeAttackConstantly && !HasDash)
 				{
-					fired = true;
+					if (!fired)
+					{
+						fired = true;
+						MeleeRadius.SetActive(true);
+						meleeWeapon.AttackConstantly = false;
+						meleeWeapon.FireRate = GunData.FireRate;
+						meleeWeapon.MeleeDamage = GunData.Damage;
+					}
+				}
+				else if (!MeleeAttackConstantly && HasDash)
+				{
+					MeleeRadius.SetActive(false);
+					if (!fired)
+					{
+						fired = true;
 
-                    MeleeRadius.SetActive(true);
-                    meleeWeapon.AttackConstantly = false;
-                    meleeWeapon.FireRate = GunData.FireRate;
-                    meleeWeapon.MeleeDamage = GunData.Damage;
-                    playerRB.AddForce(playerRB.transform.forward * DashForce, ForceMode.Impulse);
-                }             
-            }
-
-
-        }
+						MeleeRadius.SetActive(true);
+						meleeWeapon.AttackConstantly = false;
+						meleeWeapon.FireRate = GunData.FireRate;
+						meleeWeapon.MeleeDamage = GunData.Damage;
+						playerRB.AddForce(playerRB.transform.forward * DashForce, ForceMode.Force);
+					}
+				}
+			}
 		else
-		{
-            if (MeleeRadius != null) MeleeRadius.SetActive(false);
-        }
+			{
+				if (MeleeRadius != null) MeleeRadius.SetActive(false);
+			}
+        
 
-		////////////////////////////
-		///
-		if (!state)
+        // LIGHTNING WEAPONS /////////////////////////////////////////////////////////
+        if (GunData.ShootingType == SO_Gun.EShootType.Lightning)
 		{
-			fired = false;
+			if (CurrentAmmo > 0 && CanShoot() && state)
+			{
+                print("Shot Attempted");
+                if (Physics.Raycast(PlayerCam.transform.position, PlayerCam.transform.forward, out RaycastHit hit, 999f, pc.PlayerMask))
+				{
+                    print("Raycast Works");
+                    GameObject go = Instantiate(LightningLinecast);
+
+					Vector3[] bruh = { projectileOrigin.position, hit.point };
+					go.GetComponent<LineRenderer>().SetPositions(bruh);
+
+					Destroy(go, 4f);
+
+                    StartCoroutine(LightningAttack(hit.transform));
+                    CurrentAmmo -= 1;
+                    TimeSinceLastShot = 0;
+                }
+			}
+
+			////////////////////////////
+			///
+			if (!state)
+			{
+				fired = false;
+			}
+
 		}
 
-	}
-	#endregion
-
+        //if (GunData.ShootingType != SO_Gun.EShootType.Melee)
+        //{
+        //    if (MeleeRadius != null)
+        //    {
+        //        MeleeRadius.SetActive(false);
+        //    }
+        //}
+        #endregion
+    }
 	#region SpawnAndSetUpPrefab
 	private GameObject SpawnAndSetUpPrefab(Vector3 target, Vector3? spawnPos = null, Quaternion? spawnRotation = null)
 	{
@@ -661,5 +693,85 @@ public class WeaponBehavior : BaseWeapon
 		IsReloading = false;
 		StopAllCoroutines();
 	}
-	#endregion
-}
+    #endregion
+
+ #region  Lightning Attack
+    private IEnumerator LightningAttack(Transform startEnemy)
+    {
+        print("Attack Called");
+        List<GameObject> hitObjects = new List<GameObject>();
+
+		List<GameObject> newZappedItems = new List<GameObject>();
+
+		lightningDMG = GunData.Damage;
+
+		newZappedItems.Add(startEnemy.gameObject);
+		//Collider[] PotentialItems = Physics.OverlapSphere(startEnemy.position, 3f, (1 << 7));// Spread to nearby enemies
+		//Collider[] 
+
+
+		float damage = GunData.Damage;
+		while (newZappedItems.Count > 0)
+		{
+            print("While loop Works");
+			List<GameObject> ZappedItems = newZappedItems.ToList();
+			newZappedItems.Clear();
+
+			foreach(var item in ZappedItems)
+			{
+				if (item == null) continue;
+				Collider[] potentialItems = Physics.OverlapSphere(startEnemy.position, 3f, (1 << 7));
+
+				
+
+				int count = 0;
+				foreach (var pItem in potentialItems)
+				{
+					GameObject go = Instantiate(LightningLinecast);
+					Vector3[] bruh = { item.transform.position + Vector3.up, pItem.transform.position + Vector3.up };
+
+					go.GetComponent<LineRenderer>().SetPositions(bruh);
+
+					Destroy(go, 4f);
+
+                    if (pItem.GetComponent<EnemyAI>() != null)
+					{
+						if (!hitObjects.Contains(pItem.gameObject))
+						{
+							newZappedItems.Add(pItem.gameObject);
+							hitObjects.Add(pItem.gameObject);
+                            count++;
+						}
+
+						if (count >= 3) break;
+
+					}
+				}
+            }
+
+			foreach (var zpped in ZappedItems)
+			{
+                zpped.GetComponent<EnemyAI>().BeenZapped = true;
+                zpped.GetComponent<EnemyAI>().TakeDmg(damage);
+            }
+
+			damage -= (damage * 0.15f);
+
+            //for (int i = 0; i < ZappedItems.Count; i++)
+            //{
+            //	if (i < 3)
+            //	{
+            //		
+            //		if (PotentialItems[i].GetComponent<EnemyAI>() != null)
+            //		{
+            //			newZappedItems.Add(PotentialItems[i].gameObject);
+
+            //		}
+            //	}
+            }
+			yield return null;
+		}
+    }
+
+#endregion
+

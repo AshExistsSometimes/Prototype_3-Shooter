@@ -19,7 +19,7 @@ public class EnemyAI : Stats, IBurnable, ISlowable
 	[Header("Guard Specific")]
 	public GameObject Character;
 	public float mySpeed = 2.7f;
-	private float SaveMySpeed;
+	public float SaveMySpeed;
 	public bool IsRegularGuard = true;
 	public bool IsBossEnemy = false;
 
@@ -39,6 +39,8 @@ public class EnemyAI : Stats, IBurnable, ISlowable
 	public Slider MyHPSlider;
 
 	private int SaveMyDefence;
+
+	public bool BeenZapped = false;
 
 	// EFFECTS /////////////////////////
 
