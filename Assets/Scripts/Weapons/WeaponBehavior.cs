@@ -276,7 +276,7 @@ public class WeaponBehavior : BaseWeapon
 		// PROJECTILE WEAPONS ////////////////////////////////////////////////////////
 		if (GunData.ShootingType == SO_Gun.EShootType.Projectile)
 		{
-			if (CurrentAmmo > 0 && CanShoot() && state)
+			if (CurrentAmmo > 0 && CanShoot() && state && !HasChargeUp)
 			{
 
 				GameObject go = SpawnAndSetUpPrefab(PlayerCam.transform.position + (PlayerCam.transform.forward * 999f), projectileOrigin.position, Quaternion.LookRotation(PlayerCam.transform.position + (PlayerCam.transform.forward * 999f) - projectileOrigin.position));
@@ -286,16 +286,18 @@ public class WeaponBehavior : BaseWeapon
 				TimeSinceLastShot = 0;
 
 			}
-			// Charge Up Projectiles
-			else if (CurrentAmmo > 0 && CanShoot() && ThrowReady)
-			{
+            // Charge Up Projectiles
+            else if (CurrentAmmo > 0 && CanShoot() && ThrowReady && !state && HasChargeUp)
+            {
 				GameObject NewProjectile = SpawnAndSetUpPrefab(PlayerCam.transform.position + (PlayerCam.transform.forward * 999f), projectileOrigin.position, Quaternion.LookRotation(PlayerCam.transform.position + (PlayerCam.transform.forward * 999f) - projectileOrigin.position));
 				NewProjectile.GetComponent<Rigidbody>().AddForce(PlayerCam.transform.forward * Mathf.Lerp(MinThrowForce, MaxThrowForce, ThrowForce), ForceMode.Impulse);
+
 				CurrentAmmo -= 1;
 				TimeSinceLastShot = 0;
 				ThrowForce = 0f;
+                ThrowReady = false;
 
-			}
+            }
 		}
 
 		// HOLD WEAPONS //////////////////////////////////////////////////////////////
