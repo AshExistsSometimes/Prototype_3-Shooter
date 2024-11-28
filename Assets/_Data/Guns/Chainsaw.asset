@@ -15,11 +15,12 @@ MonoBehaviour:
   GunName: Chainsaw
   ShootingType: 6
   GunID: 6
-  Damage: 10
-  FireRate: 100
+  Damage: 7
+  FireRate: 0.2
   Recoil: 0
   Knockback: 0
-  CurrentAmmo: 0
+  AttackDiameter: 0
+  ChargeTime: 0
   ClipSize: 0
   ClipSize_OnPickup: {x: 0, y: 0}
   ReloadTime: 0
@@ -28,4 +29,3 @@ MonoBehaviour:
   ProjectileSpeed: 10
   StatusGiven: 0
   GunPrefab: {fileID: 4671653460841487576, guid: 7cd1e2df60ab3084ab54dc30752c961a, type: 3}
-  IsReloading: 0

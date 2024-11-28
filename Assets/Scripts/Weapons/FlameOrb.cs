@@ -8,6 +8,8 @@ public class FlameOrb : BaseProjectile
 
 	// public Vector3 targ;
 
+	public float damage = 10f;
+
 	private Camera cam;
 
 	private Vector3 direction;
@@ -18,7 +20,10 @@ public class FlameOrb : BaseProjectile
 
 	public float WaitTimeBeforeTurn = 1f;
 
-	private void Awake()
+
+    private List<EnemyAI> EnemiesInRadius = new List<EnemyAI>();
+
+    private void Awake()
 	{
 		rb = GetComponent<Rigidbody>();
 	}
@@ -33,6 +38,7 @@ public class FlameOrb : BaseProjectile
 		newTarget.y = transform.position.y;
 		transform.rotation = Quaternion.LookRotation(direction);
 		StartCoroutine(ZigZag());
+		StartCoroutine(DamageEnemy());
 	}
 
 	private void Update()
@@ -40,10 +46,6 @@ public class FlameOrb : BaseProjectile
 		//rb.AddForce( transform.forward * (GunData.ProjectileSpeed * Time.deltaTime) );
 		transform.rotation = Quaternion.LookRotation(direction);
 		rb.velocity = transform.forward * GunData.ProjectileSpeed;
-	}
-	private void OnCollisionEnter(Collision collision)
-	{
-
 	}
 
 	private IEnumerator ZigZag()
@@ -67,10 +69,25 @@ public class FlameOrb : BaseProjectile
 		Destroy(gameObject);
 	}
 
-	public override void SetUpProjectile(Vector3 target)
-	{
-		// targ = target;
+ 
 
+    private IEnumerator DamageEnemy()
+    {
+        while (true)
+		{
+			yield return new WaitForSeconds(1f);
+			Collider[] HitObjects = Physics.OverlapSphere(transform.position, 7.5f, (1<<7));
+			for (int i = 0; i < HitObjects.Length; i++)
+			{
+				if (i < 3)
+				{
+					HitObjects[i].GetComponent<EnemyAI>()?.TakeDmg(damage);
+                }
+			}
+		}
+    }
 
-	}
+    public override void SetUpProjectile(Vector3 target)
+    {
+    }
 }

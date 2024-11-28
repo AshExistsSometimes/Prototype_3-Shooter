@@ -8,7 +8,9 @@ using UnityEngine.UI;
 
 public class WeaponBehavior : BaseWeapon
 {
+	public Rigidbody playerRB;
 	public PlayerStats playerStats;
+	public MeleeAttackZone meleeWeapon;
 
 	[Header("General Refs")]
 	public TMP_Text AmmoCount;
@@ -22,11 +24,6 @@ public class WeaponBehavior : BaseWeapon
 
 	private float TimeSinceLastShot;
 	private bool IsReloading = false;
-
-
-
-
-
 
 	[Space]
 	[Space]
@@ -90,10 +87,17 @@ public class WeaponBehavior : BaseWeapon
 	[Header("Weapon Class: Radius")]
 	private bool _CanUseRadius = true;
 
+	[Header("Weapon Class: Melee")]
+	public GameObject MeleeRadius;
+	public bool MeleeAttackConstantly = false;
+	public bool HasDash = false;
+	public float DashForce = 5f;
 
-	/////////////////////////////////////////////////////////////////////////////////
+	private bool fired = false;
 
-	PlayerController pc;
+    /////////////////////////////////////////////////////////////////////////////////
+
+    PlayerController pc;
 
 	#region Start
 	private void Start()
@@ -130,7 +134,7 @@ public class WeaponBehavior : BaseWeapon
 		UpdateReloadTimer();
 		AmmoCount.text = ("Ammo: " + CurrentAmmo + "/" + GunData.ClipSize);
 		TimeSinceLastShot += Time.deltaTime;
-		Debug.DrawRay(projectileOrigin.position, projectileOrigin.forward);
+		//Debug.DrawRay(projectileOrigin.position, projectileOrigin.forward);
 
 		//Thrown Weapons with charge up
 
@@ -223,7 +227,7 @@ public class WeaponBehavior : BaseWeapon
 
 
 
-		// BURST WEAPONS //////////////////////////////////////////////////////////////
+		// MULTISHOT WEAPONS //////////////////////////////////////////////////////////////
 		if (GunData.ShootingType == SO_Gun.EShootType.MultiShot)
 		{
 			if (CurrentAmmo > 0 && CanShoot() && state)
@@ -250,7 +254,7 @@ public class WeaponBehavior : BaseWeapon
 					SpawnAndSetUpPrefab(PlayerCam.transform.position + (PlayerCam.transform.forward * 999f), projectileOrigin.position, Quaternion.LookRotation(PlayerCam.transform.position + (PlayerCam.transform.forward * 999f) - projectileOrigin.position));
 				}
 
-				// (PlayerCam.transform.forward * 3) this adds a offset forward to the gun's barrel. It does not deal with the roation.
+				// (PlayerCam.transform.forward * 3) this adds a offset forward to the gun's barrel. It does not deal with the rotation.
 				if (Physics.Raycast(PlayerCam.transform.position + (PlayerCam.transform.forward * 3), Quaternion.AngleAxis(45, PlayerCam.transform.up) * PlayerCam.transform.forward, out RaycastHit hit1, 999f)) // Right Shot
 				{
 					hit1.transform.GetComponent<EnemyAI>()?.TakeDmg(GunData.Damage);
@@ -347,22 +351,55 @@ public class WeaponBehavior : BaseWeapon
 
 
 		// MELEE WEAPONS /////////////////////////////////////////////////////////////
-		if (GunData.ShootingType == SO_Gun.EShootType.Melee)
+		if (GunData.ShootingType == SO_Gun.EShootType.Melee && state)
 		{
+			if (MeleeAttackConstantly)
+			{
+				MeleeRadius.SetActive(true);
+				meleeWeapon.AttackConstantly = true;
+				meleeWeapon.FireRate = GunData.FireRate;
+				meleeWeapon.MeleeDamage = GunData.Damage;
+			}
+			else if (!MeleeAttackConstantly && !HasDash)
+			{
+				if (!fired)
+				{
+					fired = true;
+					MeleeRadius.SetActive(true);
+					meleeWeapon.AttackConstantly = false;
+					meleeWeapon.FireRate = GunData.FireRate;
+					meleeWeapon.MeleeDamage = GunData.Damage;		
+				}
+				
+            }
+            else if (!MeleeAttackConstantly && HasDash)
+            {
+                MeleeRadius.SetActive(false);
+				if (!fired)
+				{
+					fired = true;
 
-		}
+                    MeleeRadius.SetActive(true);
+                    meleeWeapon.AttackConstantly = false;
+                    meleeWeapon.FireRate = GunData.FireRate;
+                    meleeWeapon.MeleeDamage = GunData.Damage;
+                    playerRB.AddForce(playerRB.transform.forward * DashForce, ForceMode.Impulse);
+                }             
+            }
 
 
-
-		// DASH WEAPONS /////////////////////////////////////////////////////////////
-		if (GunData.ShootingType == SO_Gun.EShootType.Dash)
+        }
+		else
 		{
-
-		}
-
-
+            if (MeleeRadius != null) MeleeRadius.SetActive(false);
+        }
 
 		////////////////////////////
+		///
+		if (!state)
+		{
+			fired = false;
+		}
 
 	}
 	#endregion
