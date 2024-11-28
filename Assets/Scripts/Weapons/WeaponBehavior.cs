@@ -367,13 +367,11 @@ public class WeaponBehavior : BaseWeapon
 
         // LIGHTNING WEAPONS /////////////////////////////////////////////////////////
         if (GunData.ShootingType == SO_Gun.EShootType.Lightning)
-		{
+		{		
 			if (CurrentAmmo > 0 && CanShoot() && state)
 			{
-                print("Shot Attempted");
                 if (Physics.Raycast(PlayerCam.transform.position, PlayerCam.transform.forward, out RaycastHit hit, 999f, pc.PlayerMask))
 				{
-                    print("Raycast Works");
                     GameObject go = Instantiate(LightningLinecast);
 
 					Vector3[] bruh = { projectileOrigin.position, hit.point };
@@ -663,7 +661,7 @@ public class WeaponBehavior : BaseWeapon
 			foreach(var item in ZappedItems)
 			{
 				if (item == null) continue;
-				Collider[] potentialItems = Physics.OverlapSphere(startEnemy.position, 3f, (1 << 7));
+				Collider[] potentialItems = Physics.OverlapSphere(startEnemy.position, 5f, (1 << 7));
 
 				
 

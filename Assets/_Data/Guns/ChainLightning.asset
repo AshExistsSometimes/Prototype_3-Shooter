@@ -21,9 +21,9 @@ MonoBehaviour:
   Knockback: -0.25
   AttackDiameter: 0
   ChargeTime: 0
-  ClipSize: 0
+  ClipSize: 4
   ClipSize_OnPickup: {x: 0, y: 0}
-  ReloadTime: 0
+  ReloadTime: 0.2
   ProjectileType: {fileID: 0}
   ProjectileMaxDistance: 0
   ProjectileSpeed: 10
