@@ -9156,12 +9156,13 @@ MonoBehaviour:
   FloatingDamageText: {fileID: 4080884953553496290}
   HP: 1500
   NeedsFloatingDamage: 1
-  DEF: 10
+  DEF: 1
   DmgReductionPerPt: 0.05
   ScoreManager: {fileID: 0}
   MyScoreValue: 500
   Character: {fileID: 7251373741659131081}
   mySpeed: 2.5
+  SaveMySpeed: 0
   IsRegularGuard: 0
   IsBossEnemy: 1
   MyFrozenParticle: {fileID: 4415864841212522232}
@@ -9173,10 +9174,11 @@ MonoBehaviour:
   YellInterval: 30
   BloodExplosion: {fileID: 1446189133584279400}
   MyHPSlider: {fileID: 4662340579502840243}
+  BeenZapped: 0
   isFrozen: 0
   PoisonCounter: 0
-  PoisonDmg: 10
-  PoisonTime: 15
+  PoisonDmg: 30
+  PoisonTime: 20
 --- !u!114 &2485131512714282143
 MonoBehaviour:
   m_ObjectHideFlags: 0

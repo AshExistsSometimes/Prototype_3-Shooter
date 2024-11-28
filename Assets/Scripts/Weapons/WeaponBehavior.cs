@@ -225,8 +225,6 @@ public class WeaponBehavior : BaseWeapon
 			}
 		}
 
-
-
 		// MULTISHOT WEAPONS //////////////////////////////////////////////////////////////
 		if (GunData.ShootingType == SO_Gun.EShootType.MultiShot)
 		{
@@ -270,8 +268,6 @@ public class WeaponBehavior : BaseWeapon
 				}
 			}
 		}
-
-
 
 		// PROJECTILE WEAPONS ////////////////////////////////////////////////////////
 		if (GunData.ShootingType == SO_Gun.EShootType.Projectile)
@@ -317,7 +313,7 @@ public class WeaponBehavior : BaseWeapon
 		}
 
 		// RADIUS WEAPONS ///////////////////////////////////////////////////////////
-		if (GunData.ShootingType == SO_Gun.EShootType.Radius)
+		if (GunData.ShootingType == SO_Gun.EShootType.Radius && state)
 		{
 			if (CanShoot() && _CanUseRadius)
 			{
