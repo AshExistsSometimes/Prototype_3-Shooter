@@ -12,7 +12,7 @@ public class SO_Gun : ScriptableObject
     {
         Instant,// Shoot Once On Click
         ChargeUp,// Hold For time before firing repeated shots
-        Burst,// Fire Multiple Shots with one click
+        MultiShot,// Fire Multiple Shots with one click
         Projectile,// Projectile is the damaging portion instead of a ray, IE Kunai or Crossbow
         Hold,// Fires Constantly when attack button held
         Radius,// Creates Sphere around player
@@ -31,11 +31,11 @@ public class SO_Gun : ScriptableObject
     }
 
     public EShootType ShootingType;
-    
+
     public int GunID;
 
 
-    [Header ("Damage Stats")]   
+    [Header("Damage Stats")]
     [Range(0f, 100f)]
 
     public float Damage;// Damage Per Shot // Only Neccesary in raycast weapons

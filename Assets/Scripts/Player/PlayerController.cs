@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     internal bool IsEmoting;
 
     public bool IsGrounded;
-    
+
 
     // Public Fields
 
@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        
+
 
         MouseY_Raw = -Input.GetAxisRaw("Mouse Y");
         MouseX_Raw = Input.GetAxisRaw("Mouse X");
@@ -106,7 +106,7 @@ public class PlayerController : MonoBehaviour
         if (CanMoveAndRotate)
         {
             CharacterMovement();
-            
+
         }
 
         // This is for animating the character
@@ -172,7 +172,7 @@ public class PlayerController : MonoBehaviour
                 CanSprint = false;
                 StartCoroutine(SprintCooldown());
             }
-            
+
         }
         else
         {
@@ -244,8 +244,8 @@ public class PlayerController : MonoBehaviour
         {
             // Hit Object
             targOb = hit.transform.gameObject;
-                targ = hit.point;
-            
+            targ = hit.point;
+
         }
         else
         {
@@ -253,8 +253,8 @@ public class PlayerController : MonoBehaviour
             targ = MainCam.gameObject.transform.forward * Length;
         }
 
-            Reticle.GetComponent<Image>().color =
-            (!ShouldChangeColor) ? ReticleNormal : ReticleShoot;
+        Reticle.GetComponent<Image>().color =
+        (!ShouldChangeColor) ? ReticleNormal : ReticleShoot;
     }
 
     private void CharacterAnimations()
