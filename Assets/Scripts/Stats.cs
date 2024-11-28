@@ -35,7 +35,7 @@ public class Stats : MonoBehaviour
         {
             FloatingDamageText.text = ("");
         }
-        
+
     }
 
     public virtual void TakeDmg(float Dmg)

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CrossbowBolt : MonoBehaviour
+public class CrossbowBolt : BaseProjectile
 {
     public Vector3 targ;
 
@@ -40,5 +40,10 @@ public class CrossbowBolt : MonoBehaviour
     {
         yield return new WaitForSeconds(10);
         Destroy(gameObject);
+    }
+
+    public override void SetUpProjectile(Vector3 target)
+    {
+        targ = target;
     }
 }

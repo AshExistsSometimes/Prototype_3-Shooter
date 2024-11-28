@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : BaseProjectile
 {
     public Vector3 targ;
 
@@ -31,7 +31,7 @@ public class Bullet : MonoBehaviour
 
 
         // then throw myself forward at speed for the distance and apply the ouchies to the enemy 
-        
+
     }
 
     private void Start()
@@ -42,7 +42,7 @@ public class Bullet : MonoBehaviour
 
     private void FixedUpdate()
     {
-       
+
         rb.velocity = transform.forward * rb.velocity.magnitude;
     }
 
@@ -66,7 +66,7 @@ public class Bullet : MonoBehaviour
     {
         rb.AddForce(transform.forward * mySpeed, ForceMode.Impulse);
 
-        transform.LookAt(targ);
+        // transform.LookAt(targ);
     }
 
     public void BulletHit()
@@ -74,5 +74,11 @@ public class Bullet : MonoBehaviour
         // AS ENEMY TakeDmg(myDamage);
         // AS ENEMY Velocity = myKnockback * Bullet.forward
         // AS ENEMY Set status to MyEffect
+    }
+
+
+    public override void SetUpProjectile(Vector3 target)
+    {
+
     }
 }
