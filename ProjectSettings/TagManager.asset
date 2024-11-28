@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Shootable
+  - Obstacle
+  - GameManager
+  - AttackRadius
+  - MeleeAttack
   layers:
   - Default
   - TransparentFX
@@ -11,17 +16,17 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - ShootableProp
+  - ShootableCharacters
+  - Player
+  - Prop
+  - Characters
+  - Spawners
+  - MinimapUI
+  - Obstacles
+  - Weapons
+  - BoundingBox
+  - Ground
   - 
   - 
   - 

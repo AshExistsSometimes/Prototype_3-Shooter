@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6f9e2badf3bb3f4a934e4f55a841cff, type: 3}
+  m_Name: GrapplingHook
+  m_EditorClassIdentifier: 
+  GunName: Grappling Hook
+  ShootingType: 3
+  GunID: 14
+  Damage: 1
+  FireRate: 3
+  Recoil: 0
+  Knockback: 0
+  ClipSize: 0
+  ClipSize_OnPickup: {x: 0, y: 0}
+  ReloadTime: 0
+  ProjectileType: {fileID: 0}
+  StatusGiven: 4
+  GunPrefab: {fileID: 2606357808226189793, guid: a0bf8ed876b33274aaf931cef9824698, type: 3}

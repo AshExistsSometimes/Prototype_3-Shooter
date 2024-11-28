@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,15 +18,36 @@ public class PlayerController : MonoBehaviour
     internal GameObject MainCam;
 
     internal bool IsAiming;
+    internal bool IsEmoting;
 
+    public bool IsGrounded;
+
+
+    // Public Fields
 
     [Header("Refs")]
     public GameObject CamAttachment;
     public GameObject CamHelperOrigin;
     public GameObject CamHelper;
+    public CapsuleCollider PlayerCollider;
+    [Space]
+    public Slider StaminaSlider;
+    [Space]
+    public LayerMask PlayerMask;
 
-    [Header("Movements")]
-    public float MoveSpeed;
+    [Header("Movement")]
+    public float mySpeed = 3f;
+    public float WalkSpeed = 3f;
+    public float SprintSpeed = 6f;
+    public float JumpHeight;
+    [Space]
+    public float MaxStamina = 100;
+    private float Stamina;
+    public float StaminaDrainSpeed = 1f;
+    private bool CanSprint = true;
+    public float TimeBeforeSprintAfterExhausted = 2f;
+
+    public bool CanMoveAndRotate = true;
 
     [Header("Rotations")]
     public float TurnSpeed;
@@ -37,6 +61,7 @@ public class PlayerController : MonoBehaviour
     public float Cam_Offset;
 
     [Header("Aiming")]
+
     public float AimingFOV;
     public float Non_AimingFOV;
     public GameObject Reticle;
@@ -45,18 +70,26 @@ public class PlayerController : MonoBehaviour
     public Color ReticleNormal;
     public Color ReticleShoot;
 
+    public GameObject targOb;
+
+    public Vector3 targ;
+
     void Start()
     {
         MyAnim = GetComponent<Animator>();
         MyRigid = GetComponent<Rigidbody>();
         MainCam = Camera.main.gameObject;
         Reticle.SetActive(false);
+        Stamina = MaxStamina;
+        StaminaSlider.maxValue = MaxStamina;
 
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
     {
+
+
         MouseY_Raw = -Input.GetAxisRaw("Mouse Y");
         MouseX_Raw = Input.GetAxisRaw("Mouse X");
 
@@ -64,32 +97,111 @@ public class PlayerController : MonoBehaviour
         RawVertical = Input.GetAxisRaw("Vertical");
 
         // Rotate both character & camera
-        CharacterAndCamRotations();
+        if (CanMoveAndRotate)
+        {
+            CharacterAndCamRotations();
+        }
 
         // This is to move our character
-        CharacterMovement();
+        if (CanMoveAndRotate)
+        {
+            CharacterMovement();
+
+        }
 
         // This is for animating the character
-        CharacterAnimations();
+        if (CanMoveAndRotate)
+        {
+            CharacterAnimations();
+        }
 
         // This is our wall hack - UE Spring Arm Component
-        CamWallCollisionHelper();
+        if (CanMoveAndRotate)
+        {
+            CamWallCollisionHelper();
+        }
 
         // Aiming Feature
-        Aiming();
+        if (CanMoveAndRotate)
+        {
+            Aiming();
+        }
 
+        // Jumping
+        if (CanMoveAndRotate)
+        {
+            Jumping();
+        }
 
+        // Emoting
+        if (CanMoveAndRotate)
+        {
+            Emoting();
+        }
 
+        if (!IsGrounded)
+        {
+            MyAnim.SetBool("Falling", true);
+            MyAnim.SetBool("GROUNDED", false);
+        }
+        if (IsGrounded)
+        {
+            MyAnim.SetBool("Falling", false);
+            MyAnim.SetBool("GROUNDED", true);
+        }
+
+        SprintCheck();
+
+    }
+
+    private void SprintCheck()
+    {
+        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.LeftControl)) && CanSprint)
+        {
+            if (CanSprint)
+            {
+                mySpeed = SprintSpeed;
+                MyAnim.speed = SprintSpeed / 3;
+                Stamina -= StaminaDrainSpeed * Time.deltaTime;
+                StaminaSlider.value = Stamina;
+            }
+
+            if (Stamina <= 0.001f)
+            {
+                Stamina = 0f;
+                CanSprint = false;
+                StartCoroutine(SprintCooldown());
+            }
+
+        }
+        else
+        {
+            mySpeed = WalkSpeed;
+            MyAnim.speed = 1;
+
+            Stamina += (StaminaDrainSpeed / 1.5f) * Time.deltaTime;
+            StaminaSlider.value = Stamina;
+            if (Stamina >= MaxStamina)
+            {
+                Stamina = MaxStamina;
+            }
+        }
+    }
+
+    private IEnumerator SprintCooldown()
+    {
+        yield return new WaitForSeconds(TimeBeforeSprintAfterExhausted);
+        CanSprint = true;
     }
 
     private void LateUpdate()
     {
         if (IsAiming)
         {
+            Spine.transform.LookAt(targ);
             Spine.transform.Rotate(SpineOffset);
         }
     }
-
     private void Aiming()
     {
         IsAiming = Input.GetMouseButton(1);
@@ -111,26 +223,38 @@ public class PlayerController : MonoBehaviour
         if (Physics.Linecast(MainCam.gameObject.transform.position,      //1 Origin
             MainCam.gameObject.transform.position +                      //2
             (MainCam.gameObject.transform.forward * Length)              //2 Destination (Endpoint)
-            , out hit,                                                 // 3 where to store the hit info
-            ShootingLayerMask))                                        // 4 what layers to query
+            , out hit,                                                   // 3 where to store the hit info
+            ShootingLayerMask))                                          // 4 what layers to query
         {
-#if UNITY_EDITOR
-            print("1");
-#endif 
+            // COLOUR CHANGING RETICLE
             if (hit.transform)
             {
                 if (hit.transform.CompareTag("Shootable"))
                 {
-#if UNITY_EDITOR
-                    print("3");
-#endif 
                     ShouldChangeColor = true;
                 }
             }
         }
 
+        if (Physics.Linecast(MainCam.gameObject.transform.position,      //1 Origin
+            MainCam.gameObject.transform.position +                      //2
+            (MainCam.gameObject.transform.forward * Length)              //2 Destination (Endpoint)
+            , out hit, PlayerMask                                        // 3 where to store the hit info
+           ))
+        {
+            // Hit Object
+            targOb = hit.transform.gameObject;
+            targ = hit.point;
+
+        }
+        else
+        {
+            targOb = null;
+            targ = MainCam.gameObject.transform.forward * Length;
+        }
+
         Reticle.GetComponent<Image>().color =
-            (!ShouldChangeColor) ? ReticleNormal : ReticleShoot;
+        (!ShouldChangeColor) ? ReticleNormal : ReticleShoot;
     }
 
     private void CharacterAnimations()
@@ -187,12 +311,41 @@ public class PlayerController : MonoBehaviour
 
     private void CharacterMovement()
     {
-        Vector3 MoveVec = Vector3.zero;
-
-        MoveVec += transform.forward * RawVertical;
-        MoveVec += transform.right * RawHorizontal;
-        MoveVec = MoveVec.normalized * MoveSpeed;
+        Vector3 MoveVec = GetMovementVector();
+        MoveVec = MoveVec.normalized * mySpeed;
 
         MyRigid.velocity = new Vector3(MoveVec.x, MyRigid.velocity.y, MoveVec.z);
+    }
+
+    private Vector3 GetMovementVector()
+    {
+        Vector3 MoveVec = Vector3.zero;
+        MoveVec += transform.forward * RawVertical;
+        MoveVec += transform.right * RawHorizontal;
+        return MoveVec;
+    }
+
+    private void Jumping()
+    {
+        Vector3 MoveVec = GetMovementVector();
+
+        if (IsGrounded && Input.GetKeyDown(KeyCode.Space))
+        {
+            MyAnim.SetBool("Jumping", true);
+            MyRigid.velocity = new Vector3(MoveVec.x, JumpHeight, MoveVec.z);
+            StartCoroutine(JumpEndCoroutine());
+        }
+    }
+
+    private void Emoting()
+    {
+        IsEmoting = Input.GetKeyDown(KeyCode.P);
+        MyAnim.SetBool("Emoting", true);
+    }
+
+    private IEnumerator JumpEndCoroutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        MyAnim.SetBool("Jumping", false);
     }
 }

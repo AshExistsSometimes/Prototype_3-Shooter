@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6f9e2badf3bb3f4a934e4f55a841cff, type: 3}
+  m_Name: Kunai
+  m_EditorClassIdentifier: 
+  GunName: Kunai
+  ShootingType: 3
+  GunID: 7
+  Damage: 15
+  FireRate: 1
+  Recoil: 0
+  Knockback: 0
+  AttackDiameter: 0
+  ChargeTime: 0
+  ClipSize: 10
+  ClipSize_OnPickup: {x: 3, y: 3}
+  ReloadTime: 1.5
+  ProjectileType: {fileID: 8480618674958400395, guid: a0b889f6aa967f9499bbdbd7f4b2c95a, type: 3}
+  ProjectileMaxDistance: 0
+  ProjectileSpeed: 50
+  StatusGiven: 0
+  GunPrefab: {fileID: 3013179105231157674, guid: fbb3d8e7ac61725438aca02eae556a7a, type: 3}

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6f9e2badf3bb3f4a934e4f55a841cff, type: 3}
+  m_Name: ChainLightning
+  m_EditorClassIdentifier: 
+  GunName: Tesla Coil
+  ShootingType: 0
+  GunID: 11
+  Damage: 15
+  FireRate: 4
+  Recoil: 1
+  Knockback: -0.25
+  ClipSize: 0
+  ClipSize_OnPickup: {x: 0, y: 0}
+  ReloadTime: 0
+  ProjectileType: {fileID: 0}
+  StatusGiven: 4
+  GunPrefab: {fileID: 2092596593084847543, guid: a8f963ae0fdb7494b90117cb23c1dc45, type: 3}
